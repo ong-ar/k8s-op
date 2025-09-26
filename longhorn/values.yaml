@@ -1,0 +1,18 @@
+persistence:
+  defaultClass: true              # Longhorn을 클러스터의 기본 StorageClass로 설정
+  defaultFsType: ext4             # PVC 생성 시 디스크 포맷 (ext4 권장, xfs도 가능)
+  reclaimPolicy: Delete           # PVC 삭제 시 PV도 같이 삭제 (Retain으로 두면 PV는 남김)
+  defaultNodeSelector: {}         # 특정 노드에만 Longhorn 볼륨을 생성하고 싶다면 지정 (ex: {"kubernetes.io/hostname": "node1"})
+
+defaultSettings:
+  backupTarget: ""                # 외부 백업 경로 (예: s3://bucket@region/backupstore, nfs://server:/path)
+  defaultDataPath: /var/lib/longhorn  # Longhorn이 실제 데이터를 저장하는 노드 경로 (별도 디스크를 마운트해 두는 게 이상적)
+  replicaSoftAntiAffinity: false  # false → 복제본을 반드시 서로 다른 노드에 배치 (HA 강화). true → 같은 노드에 붙는 것도 허용
+  storageOverProvisioningPercentage: 200   # 오버프로비저닝 허용 비율 (%). 디스크 사용량 예측에 여유를 두는 설정
+  storageMinimalAvailablePercentage: 25    # 디스크 최소 여유 공간이 25% 미만이면 스케줄링 안 함
+  upgradeChecker: true             # Longhorn 버전 업그레이드 체크 여부 (주기적으로 Longhorn 공식 버전 서버에 문의) 
+  
+service:
+  ui:
+    type: LoadBalancer             # Longhorn UI를 LoadBalancer로 노출 (MetalLB가 External-IP 할당)
+    port: 80                       # Longhorn UI 접근 포트

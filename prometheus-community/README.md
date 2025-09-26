@@ -10,6 +10,11 @@ helm install monitoring prometheus-community/kube-prometheus-stack \
   --version 77.11.1 \
   -n monitoring --create-namespace \
   -f values.yaml
+
+helm upgrade monitoring prometheus-community/kube-prometheus-stack \
+  --version 77.11.1 \
+  -n monitoring --create-namespace \
+  -f values.yaml
 ```
 
 ```bash
