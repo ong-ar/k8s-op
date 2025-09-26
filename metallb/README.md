@@ -10,7 +10,5 @@ helm install metallb metallb/metallb \
   --version 0.15.2 \
   -n metallb-system --create-namespace
 
-cd config-chart
-
 helm install metallb-config ./config-chart -n metallb-system
 ```

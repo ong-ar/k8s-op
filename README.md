@@ -1,4 +1,5 @@
 # list
 
 1. calico
-2. metallb
+2. metrics-server
+3. metallb
