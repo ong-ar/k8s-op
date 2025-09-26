@@ -5,6 +5,7 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
+          storageClassName: longhorn
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
@@ -18,6 +19,10 @@ prometheus:
 grafana:
   persistence:
     enabled: true
+    type: pvc
+    storageClassName: longhorn        # Longhorn 스토리지 지정
+    accessModes:
+      - ReadWriteOnce
     size: 2Gi # 10Gi 으로 추후 변경해야함
   service:
     type: LoadBalancer
@@ -28,6 +33,7 @@ alertmanager:
     storage:
       volumeClaimTemplate:
         spec:
+          storageClassName: longhorn
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
