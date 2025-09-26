@@ -1,3 +1,11 @@
 args:
   - --kubelet-insecure-tls
   - --kubelet-preferred-address-types=InternalIP
+volumes:
+  - name: k8s-pki
+    hostPath:
+      path: /etc/kubernetes/pki
+volumeMounts:
+  - name: k8s-pki
+    mountPath: /etc/kubernetes/pki
+    readOnly: true
