@@ -1,4 +1,4 @@
-# repo
+# install
 
 ```bash
 helm repo add projectcalico https://projectcalico.docs.tigera.io/charts

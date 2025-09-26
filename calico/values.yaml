@@ -3,4 +3,4 @@ installation:
 
   calicoNetwork:
     ipPools:
-        cidr: 10.10.0.0/16
+      - cidr: 10.10.0.0/16
