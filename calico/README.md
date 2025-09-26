@@ -13,5 +13,15 @@ helm install calico projectcalico/tigera-operator \
 ```
 
 ```bash
-kubectl get all -n tigera-operator
+# Operator 상태 확인
+kubectl get pods -n tigera-operator
+
+# Calico core 컴포넌트 상태 확인
+kubectl get pods -n calico-system -o wide
+
+# CRD 리소스 확인
+kubectl get ippools.crd.projectcalico.org
+
+# node ready
+kubectl get nodes -o wide
 ```
