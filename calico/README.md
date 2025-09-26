@@ -11,3 +11,7 @@ helm install calico projectcalico/tigera-operator \
   -n tigera-operator --create-namespace \
   -f values.yaml
 ```
+
+```bash
+kubectl get all -n tigera-operator
+```
