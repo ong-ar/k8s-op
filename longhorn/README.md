@@ -13,7 +13,7 @@ helm install longhorn longhorn/longhorn \
 
 helm upgrade longhorn longhorn/longhorn \
   --namespace longhorn-system \
-  --version 1.10.0
+  --version 1.10.0 \
   -f values.yaml
 ```
 
