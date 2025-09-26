@@ -8,7 +8,7 @@ helm repo update
 ```bash
 helm install monitoring prometheus-community/kube-prometheus-stack \
   --version 77.11.1 \
-  -n kube-system --create-namespace \
+  -n monitoring --create-namespace \
   -f values.yaml
 ```
 
