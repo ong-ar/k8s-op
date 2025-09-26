@@ -1,14 +1,37 @@
-grafana:
-  service:
-    type: LoadBalancer
-    port: 9091
-
 prometheus:
+  prometheusSpec:
+    retention: 15d
+    scrapeInterval: 30s
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 5Gi # 50Gi 으로 추후 변경해야함
+    walCompression: true
+    enableAdminAPI: false
   service:
     type: LoadBalancer
     port: 9090
 
+grafana:
+  persistence:
+    enabled: true
+    size: 2Gi # 10Gi 으로 추후 변경해야함
+  service:
+    type: LoadBalancer
+    port: 9091  # 기존 설정과 일치
+
 alertmanager:
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi # 5Gi 으로 추후 변경해야함
   service:
     type: LoadBalancer
     port: 9093
