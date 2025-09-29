@@ -9,7 +9,7 @@ defaultSettings:
   defaultDataPath: /var/lib/longhorn  # Longhorn이 실제 데이터를 저장하는 노드 경로 (별도 디스크를 마운트해 두는 게 이상적)
   replicaSoftAntiAffinity: false  # false → 복제본을 반드시 서로 다른 노드에 배치 (HA 강화). true → 같은 노드에 붙는 것도 허용
   upgradeChecker: true    
-  defaultReplicaCount: 1         # 기본 복제본 수
+  defaultReplicaCount: "1"         # 기본 복제본 수
   # storageOverProvisioningPercentage: 200   # 오버프로비저닝 허용 비율 (%). 디스크 사용량 예측에 여유를 두는 설정
   # storageMinimalAvailablePercentage: 25    # 디스크 최소 여유 공간이 25% 미만이면 스케줄링 안 함
 
