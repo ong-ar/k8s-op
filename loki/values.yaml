@@ -24,6 +24,9 @@ loki:
 # 단일 바이너리 1개만 띄움
 singleBinary:
   replicas: 1
+  service:
+    type: LoadBalancer
+    port: 3100
 
 # 다른(스케일러블/분산) 타깃은 전부 0으로 “명시적”으로 꺼야 함
 backend:         { replicas: 0 }
