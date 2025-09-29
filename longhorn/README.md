@@ -35,6 +35,8 @@ helm upgrade longhorn longhorn/longhorn \
 ```
 
 ```bash
+kubectl get svc -n longhorn-system
+
 kubectl get pvc -n monitoring
 
 kubectl get pv | grep longhorn

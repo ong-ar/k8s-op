@@ -1,0 +1,9 @@
+deploymentMode: SingleBinary
+
+loki:
+  auth_enabled: false
+
+persistence:
+  enabled: true
+  size: 10Gi
+  storageClass: standard
