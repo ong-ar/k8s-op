@@ -19,5 +19,5 @@ kubectl get pods -n kube-system -l app.kubernetes.io/name=metrics-server -o wide
 helm get values metrics-server -n kube-system
 
 # Deployment args 확인
-kubectl -n kube-system get deploy metrics-server -o yaml | grep -A5 args:
+kubectl -n kube-system get deploy metrics-server -o yaml | grep -A10 args:
 ```
