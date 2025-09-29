@@ -1,18 +1,53 @@
+# ==== Loki in SingleBinary + Filesystem (PVC) ====
 deploymentMode: SingleBinary
 
 loki:
   auth_enabled: false
   commonConfig:
-    replication_factor: 1
+    replication_factor: 1        # 단일 복제 필수
+  # 반드시 스키마 지정 (v13 + filesystem)
+  schemaConfig:
+    configs:
+      - from: "2025-01-01"
+        store: tsdb
+        object_store: filesystem
+        schema: v13
+        index:
+          prefix: loki_index_
+          period: 24h
   storage:
     type: filesystem
     filesystem:
       chunks_directory: /var/loki/chunks
       rules_directory: /var/loki/rules
 
+# 단일 바이너리 1개만 띄움
+singleBinary:
+  replicas: 1
+
+# 다른(스케일러블/분산) 타깃은 전부 0으로 “명시적”으로 꺼야 함
+backend:         { replicas: 0 }
+read:            { replicas: 0 }
+write:           { replicas: 0 }
+ingester:        { replicas: 0 }
+querier:         { replicas: 0 }
+queryFrontend:   { replicas: 0 }
+queryScheduler:  { replicas: 0 }
+distributor:     { replicas: 0 }
+compactor:       { replicas: 0 }
+indexGateway:    { replicas: 0 }
+bloomCompactor:  { replicas: 0 }
+bloomGateway:    { replicas: 0 }
+
+# 캐시 비활성화 (메모리 부족 문제 해결)
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false
+
+# PVC 설정 (StorageClass 이름은 클러스터에 맞게)
 persistence:
   enabled: true
-  storageClass: longhorn   # 👉 여기를 실제 클러스터 storageClass 이름으로
-  accessModes:
-    - ReadWriteOnce
+  storageClass: longhorn
+  accessModes: [ "ReadWriteOnce" ]
   size: 10Gi
