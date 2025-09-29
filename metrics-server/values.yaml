@@ -1,11 +1,3 @@
 args:
-  - --kubelet-certificate-authority=/etc/kubernetes/pki/ca.crt
   - --kubelet-preferred-address-types=InternalIP
-extraVolumes:
-  - name: k8s-pki
-    hostPath:
-      path: /etc/kubernetes/pki
-extraVolumeMounts:
-  - name: k8s-pki
-    mountPath: /etc/kubernetes/pki
-    readOnly: true
+  - --kubelet-insecure-tls
