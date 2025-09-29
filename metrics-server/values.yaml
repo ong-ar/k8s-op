@@ -1,11 +1,7 @@
-containerPort: 4443
 args:
   - --kubelet-certificate-authority=/etc/kubernetes/pki/ca.crt
   - --kubelet-preferred-address-types=InternalIP
   - --secure-port=4443
-service:
-  port: 443
-  targetPort: https
 extraVolumes:
   - name: k8s-pki
     hostPath:

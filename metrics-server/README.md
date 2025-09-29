@@ -10,6 +10,11 @@ helm install metrics-server metrics-server/metrics-server \
   --version 3.12.2 \
   -n kube-system --create-namespace \
   -f values.yaml
+
+helm upgrade metrics-server metrics-server/metrics-server \
+  --version 3.12.2 \
+  -n kube-system \
+  -f values.yaml
 ```
 
 ```bash
