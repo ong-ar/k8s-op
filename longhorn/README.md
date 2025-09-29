@@ -1,6 +1,23 @@
 # install
 
 ```bash
+# Ubuntu / Debian
+sudo apt update && sudo apt install -y open-iscsi
+
+# CentOS / RHEL
+sudo yum install -y iscsi-initiator-utils
+
+sudo systemctl enable iscsid
+sudo systemctl start iscsid
+
+sudo modprobe iscsi_tcp
+
+# 권장
+sudo systemctl stop multipathd
+sudo systemctl disable multipathd
+```
+
+```bash
 helm repo add longhorn https://charts.longhorn.io
 helm repo update
 ```
