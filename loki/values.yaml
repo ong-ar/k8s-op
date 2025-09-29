@@ -2,8 +2,17 @@ deploymentMode: SingleBinary
 
 loki:
   auth_enabled: false
+  commonConfig:
+    replication_factor: 1
+  storage:
+    type: filesystem
+    filesystem:
+      chunks_directory: /var/loki/chunks
+      rules_directory: /var/loki/rules
 
 persistence:
   enabled: true
+  storageClass: longhorn   # 👉 여기를 실제 클러스터 storageClass 이름으로
+  accessModes:
+    - ReadWriteOnce
   size: 10Gi
-  storageClass: longhorn
