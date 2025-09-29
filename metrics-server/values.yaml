@@ -1,7 +1,6 @@
 args:
   - --kubelet-certificate-authority=/etc/kubernetes/pki/ca.crt
   - --kubelet-preferred-address-types=InternalIP
-  - --secure-port=4443
 extraVolumes:
   - name: k8s-pki
     hostPath:
