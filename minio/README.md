@@ -2,7 +2,7 @@
 
 ## values
 
-- [Link](https://github.com/prometheus-community/helm-charts/tree/kube-prometheus-stack-77.11.1/charts/kube-prometheus-stack)
+- [Link](https://docs.min.io/community/minio-object-store/operations/deployments/k8s-deploy-minio-tenant-on-kubernetes.html)
 
 ## commands
 
