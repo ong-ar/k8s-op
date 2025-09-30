@@ -8,16 +8,12 @@ tenant:
     secretKey: "minioadminpw"
 
   pools:
-    - name: tenant-loki-pool-0             # ← 필수!
+    - name: pool-0
       servers: 4
       volumesPerServer: 1
       size: 10Gi
       storageClassName: longhorn
 
   exposeServices:
-    console:
-      type: LoadBalancer
-      loadBalancerIP: 192.168.2.198
-    minio:
-      type: LoadBalancer
-      loadBalancerIP: 192.168.2.199
+    console: true
+    minio: true
