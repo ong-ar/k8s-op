@@ -79,5 +79,6 @@ resultsCache:
 persistence:
   enabled: true
   storageClass: longhorn
-  accessModes: [ "ReadWriteOnce" ]
+  accessModes: 
+    - ReadWriteOnce
   size: 2Gi
