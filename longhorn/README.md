@@ -1,5 +1,11 @@
 # install
 
+## values
+
+- [Link](https://github.com/longhorn/longhorn/tree/v1.10.0/chart)
+
+## commands
+
 ```bash
 # Ubuntu / Debian
 sudo apt update && sudo apt install -y open-iscsi

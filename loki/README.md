@@ -1,5 +1,11 @@
 # install
 
+## values
+
+- [Link](https://grafana.com/docs/loki/latest/setup/install/helm/install-monolithic/)
+
+## commands
+
 ```bash
 helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update

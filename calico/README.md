@@ -1,5 +1,11 @@
 # install
 
+## values
+
+- [Link](https://docs.tigera.io/calico/3.30/reference/installation/api#installation)
+
+## commands
+
 ```bash
 helm repo add projectcalico https://projectcalico.docs.tigera.io/charts
 helm repo update

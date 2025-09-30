@@ -1,5 +1,11 @@
 # install
 
+## values
+
+- [Link](https://github.com/kubernetes-sigs/metrics-server/tree/metrics-server-helm-chart-3.12.2/charts/metrics-server)
+
+## commands
+
 ```bash
 helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
 helm repo update

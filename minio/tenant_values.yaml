@@ -1,0 +1,41 @@
+tenant:
+  name: tenant-loki
+  namespace: tenant-loki
+
+  configuration:
+    name: tenant-loki-env-configuration
+    # 나중에 변경 해야됨
+    rootUser: "minioadmin"
+    rootPassword: "minioadminpw"
+    # credsSecret:
+    #   name: tenant-loki-creds-secret
+
+  pools:
+    - servers: 4
+      volumesPerServer: 1
+      size: 10Gi
+      storageClassName: longhorn
+
+  exposeServices:
+    console: true
+    minio: true
+
+  serviceMetadata:
+    console:
+      type: LoadBalancer
+      serviceAnnotations: {}
+      loadBalancerIP: 192.168.2.198
+    s3:
+      type: LoadBalancer
+      serviceAnnotations: {}
+      loadBalancerIP: 192.168.2.199
+
+# pod / resource 관련 (필요 시 조정)
+# pod:
+#   resources:
+#     requests:
+#       cpu: "250m"
+#       memory: "512Mi"
+#     limits:
+#       cpu: "1000m"
+#       memory: "2Gi"

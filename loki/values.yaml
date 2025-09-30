@@ -2,6 +2,11 @@
 deploymentMode: SingleBinary
 
 loki:
+  limits_config:
+    retention_period: 168h   # 7일 보관
+  compactor:
+    retention_enabled: true
+    delete_request_store: filesystem
   auth_enabled: false
   commonConfig:
     replication_factor: 1        # 단일 복제 필수
