@@ -11,6 +11,10 @@ loki:
         index:
           prefix: loki_index_
           period: 24h
+  memberlist:
+    join_members: []
+    abort_if_cluster_join_fails: false
+    bind_port: 7946
 
   # MinIO 연결 설정
   storage:
