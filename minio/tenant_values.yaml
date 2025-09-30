@@ -17,6 +17,6 @@ tenant:
   exposeServices:
     console: true
     minio: true
-    
+
   certificate:
     requestAutoCert: false

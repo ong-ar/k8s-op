@@ -1,61 +1,72 @@
-# ==== Loki in SingleBinary + Filesystem (PVC) ====
-deploymentMode: SingleBinary
-
 loki:
-  limits_config:
-    retention_period: 168h   # 7일 보관
-  compactor:
-    retention_enabled: true
-    delete_request_store: filesystem
-  auth_enabled: false
   commonConfig:
-    replication_factor: 1        # 단일 복제 필수
-  # 반드시 스키마 지정 (v13 + filesystem)
+    replication_factor: 1
+
   schemaConfig:
     configs:
-      - from: "2025-01-01"
+      - from: "2024-04-01"
         store: tsdb
-        object_store: filesystem
+        object_store: s3
         schema: v13
         index:
           prefix: loki_index_
           period: 24h
-  storage:
-    type: filesystem
-    filesystem:
-      chunks_directory: /var/loki/chunks
-      rules_directory: /var/loki/rules
 
-# 단일 바이너리 1개만 띄움
+  pattern_ingester:
+    enabled: true
+
+  limits_config:
+    allow_structured_metadata: true
+    volume_enabled: true
+
+  ruler:
+    enable_api: true
+
+  # MinIO 연결 설정
+  storage:
+    type: s3
+    bucketNames:
+      chunks: loki-chunks
+      ruler: loki-ruler
+      admin: loki-admin
+    s3:
+      endpoint: http://tenant-loki-hl.tenant-loki.svc.cluster.local:9000
+      region: us-east-1
+      accessKeyId: minioadmin
+      secretAccessKey: minioadminpw
+      insecure: true
+
+# 이미 MinIO Tenant가 있으므로 chart 내부 minio 설치 비활성화
+minio:
+  enabled: false
+
+deploymentMode: SingleBinary
+
 singleBinary:
   replicas: 1
-  service:
-    type: LoadBalancer
-    port: 3100
 
-# 다른(스케일러블/분산) 타깃은 전부 0으로 “명시적”으로 꺼야 함
-backend:         { replicas: 0 }
-read:            { replicas: 0 }
-write:           { replicas: 0 }
-ingester:        { replicas: 0 }
-querier:         { replicas: 0 }
-queryFrontend:   { replicas: 0 }
-queryScheduler:  { replicas: 0 }
-distributor:     { replicas: 0 }
-compactor:       { replicas: 0 }
-indexGateway:    { replicas: 0 }
-bloomCompactor:  { replicas: 0 }
-bloomGateway:    { replicas: 0 }
-
-# 캐시 비활성화 (메모리 부족 문제 해결)
-chunksCache:
-  enabled: false
-resultsCache:
-  enabled: false
-
-# PVC 설정 (StorageClass 이름은 클러스터에 맞게)
-persistence:
-  enabled: true
-  storageClass: longhorn
-  accessModes: [ "ReadWriteOnce" ]
-  size: 10Gi
+# 나머지는 전부 0으로 (SingleBinary 모드니까)
+backend:
+  replicas: 0
+read:
+  replicas: 0
+write:
+  replicas: 0
+ingester:
+  replicas: 0
+querier:
+  replicas: 0
+queryFrontend:
+  replicas: 0
+queryScheduler:
+  replicas: 0
+distributor:
+  replicas: 0
+compactor:
+  replicas: 0
+indexGateway:
+  replicas: 0
+bloomCompactor:
+  replicas: 0
+bloomGateway:
+  replicas: 0
