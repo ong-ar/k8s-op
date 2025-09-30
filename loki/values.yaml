@@ -25,6 +25,7 @@ loki:
       accessKeyId: minioadmin
       secretAccessKey: minioadminpw
       insecure: true
+      s3ForcePathStyle: true
 
 # 이미 MinIO Tenant가 있으므로 chart 내부 minio 설치 비활성화
 minio:
