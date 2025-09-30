@@ -12,16 +12,6 @@ loki:
           prefix: loki_index_
           period: 24h
 
-  pattern_ingester:
-    enabled: true
-
-  limits_config:
-    allow_structured_metadata: true
-    volume_enabled: true
-
-  ruler:
-    enable_api: true
-
   # MinIO 연결 설정
   storage:
     type: s3
