@@ -2,13 +2,11 @@ tenant:
   name: tenant-loki
   namespace: tenant-loki
 
-  configuration:
-    name: tenant-loki-env-configuration
-    # 나중에 변경 해야됨
-    rootUser: "minioadmin"
-    rootPassword: "minioadminpw"
-    # credsSecret:
-    #   name: tenant-loki-creds-secret
+  # 평문 계정 (운영에서는 Secret 권장)
+  configSecret:
+    name: tenant-loki-creds-secret
+    accessKey: "minioadmin"
+    secretKey: "minioadminpw"
 
   pools:
     - servers: 4
