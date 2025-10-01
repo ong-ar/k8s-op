@@ -23,7 +23,7 @@ loki:
       region: us-east-1
       accessKeyId: WSlYsQi4TgXDRYBNIcBh
       secretAccessKey: ruekPWYy5mcUEduckC4rHjdwEAYGdO7MQFtF53gE
-      forcePathStyle: true
+      s3ForcePathStyle: true
       insecure: true
 
 # 이미 MinIO Tenant가 있으므로 chart 내부 minio 설치 비활성화
