@@ -2,6 +2,7 @@ persistence:
   defaultClass: true              # Longhorn을 클러스터의 기본 StorageClass로 설정
   defaultFsType: ext4             # PVC 생성 시 디스크 포맷 (ext4 권장, xfs도 가능)
   reclaimPolicy: Delete           # PVC 삭제 시 PV도 같이 삭제 (Retain으로 두면 PV는 남김)
+  defaultClassReplicaCount: 1
 
 defaultSettings:
   upgradeChecker: true    

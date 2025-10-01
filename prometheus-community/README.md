@@ -22,7 +22,7 @@ helm upgrade kube-prometheus-stack prometheus-community/kube-prometheus-stack \
   -n monitoring --create-namespace \
   -f values.yaml
 
-helm uninstall
+helm uninstall kube-prometheus-stack -n monitoring
 ```
 
 ```bash
