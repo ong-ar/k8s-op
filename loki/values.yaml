@@ -68,6 +68,7 @@ compactor:
   replicas: 0
 indexGateway:
   replicas: 0
+  joinMemberlist: false
 bloomCompactor:
   replicas: 0
 bloomGateway:
