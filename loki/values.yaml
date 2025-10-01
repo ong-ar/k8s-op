@@ -21,8 +21,8 @@ loki:
     s3:
       endpoint: http://tenant-loki-hl.tenant-loki.svc.cluster.local:9000
       region: us-east-1
-      accessKeyId: minioadmin
-      secretAccessKey: minioadminpw
+      accessKeyId: WSlYsQi4TgXDRYBNIcBh
+      secretAccessKey: ruekPWYy5mcUEduckC4rHjdwEAYGdO7MQFtF53gE
       insecure: true
 
 # 이미 MinIO Tenant가 있으므로 chart 내부 minio 설치 비활성화
@@ -34,17 +34,17 @@ deploymentMode: SingleBinary
 singleBinary:
   replicas: 1
   persistence:
-    enabled: false
-  extraVolumeMounts:
-    - name: loki-storage
-      mountPath: /var/loki
-  extraVolumes:
-    - name: loki-storage
-      emptyDir: {}
-    # storageClass: longhorn
-    # accessModes: 
-    #   - ReadWriteOnce
-    # size: 2Gi
+    enabled: true
+    storageClass: longhorn
+    accessModes: 
+      - ReadWriteOnce
+    size: 5Gi
+  # extraVolumeMounts:
+  #   - name: loki-storage
+  #     mountPath: /var/loki
+  # extraVolumes:
+  #   - name: loki-storage
+  #     emptyDir: {}
 
 # 나머지는 전부 0으로 (SingleBinary 모드니까)
 backend:
