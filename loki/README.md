@@ -26,6 +26,11 @@ helm install promtail grafana/promtail \
   --version 6.17.0 \
   -n loki \
   -f promtail_values.yaml
+
+helm upgrade promtail grafana/promtail \
+  --version 6.17.0 \
+  -n loki \
+  -f promtail_values.yaml
 ```
 
 ```bash
