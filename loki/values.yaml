@@ -11,11 +11,6 @@ loki:
         index:
           prefix: loki_index_
           period: 24h
-  memberlist:
-    join_members: []
-    abort_if_cluster_join_fails: false
-    bind_port: 7946
-
   # MinIO 연결 설정
   storage:
     type: s3
@@ -29,7 +24,6 @@ loki:
       accessKeyId: minioadmin
       secretAccessKey: minioadminpw
       insecure: true
-      s3ForcePathStyle: true
 
 # 이미 MinIO Tenant가 있으므로 chart 내부 minio 설치 비활성화
 minio:
