@@ -17,9 +17,16 @@ helm install minio-operator minio-operator/operator \
   -n minio-operator --create-namespace
 
 helm install tenant-loki minio-operator/tenant \
-   --version 7.1.1 \
+  --version 7.1.1 \
   -n tenant-loki --create-namespace \
   -f tenant_values.yaml
+
+helm upgrade tenant-loki minio-operator/tenant \
+  --version 7.1.1 \
+  -n tenant-loki --create-namespace \
+  -f tenant_values.yaml
+
+helm uninstall tenant-loki -n tenant-loki
 ```
 
 ```bash
@@ -28,4 +35,10 @@ kubectl get pods -n minio-operator
 kubectl get pods -n tenant-loki
 kubectl get pvc -n tenant-loki
 kubectl get svc -n tenant-loki
+
+kubectl get pods -n minio-operator
+kubectl get crd | grep tenants.minio.min.io
+
+kubectl get tenants -n tenant-loki
+kubectl describe tenant tenant-loki -n tenant-loki
 ```

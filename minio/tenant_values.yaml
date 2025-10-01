@@ -9,9 +9,9 @@ tenant:
 
   pools:
     - name: pool-0
-      servers: 2
+      servers: 4
       volumesPerServer: 1
-      size: 4Gi
+      size: 2Gi
       storageClassName: longhorn
 
   exposeServices:
