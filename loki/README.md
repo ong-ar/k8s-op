@@ -14,18 +14,18 @@ helm repo update
 ```bash
 helm install loki grafana/loki \
   --version 6.41.1 \
-  -n monitoring --create-namespace \
+  -n loki --create-namespace \
   -f values.yaml
 
 helm upgrade loki grafana/loki \
   --version 6.41.1 \
-  -n monitoring --create-namespace \
+  -n loki --create-namespace \
   -f values.yaml
 
 helm install promtail grafana/promtail \
   --version 6.17.0 \
-  -n monitoring \
-  --set "loki.serviceName=loki"
+  -n loki \
+  -f promtail_values.yaml
 ```
 
 ```bash
