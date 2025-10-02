@@ -1,0 +1,15 @@
+server:
+  # MetalLB를 통해 외부 IP 할당
+  service:
+    type: LoadBalancer       # 기본 ClusterIP → LoadBalancer
+    servicePortHttp: 80      # HTTP 서비스 포트
+    servicePortHttps: 0      # HTTPS 끔 (0으로 설정하면 템플릿에서 빠짐)
+
+  # 서버에 --insecure 플래그 적용해서 TLS 끔
+  insecure: true
+  extraArgs:
+    - --insecure
+
+  # Ingress는 사용하지 않음 (나중에 원하면 ingress.enabled=true 가능)
+  ingress:
+    enabled: false

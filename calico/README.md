@@ -16,6 +16,11 @@ helm install calico projectcalico/tigera-operator \
   --version 3.30.3 \
   -n tigera-operator --create-namespace \
   -f values.yaml
+
+helm upgrade calico projectcalico/tigera-operator \
+  --version 3.30.3 \
+  -n tigera-operator --create-namespace \
+  -f values.yaml
 ```
 
 ```bash
