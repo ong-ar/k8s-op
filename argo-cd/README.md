@@ -24,6 +24,9 @@ helm upgrade argocd argo/argo-cd \
 ```
 
 ```bash
+# password
+kubectl -n argo-cd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
 kubectl get pods -n argo-cd
 
 kubectl get pods -n argo-cd -o wide
