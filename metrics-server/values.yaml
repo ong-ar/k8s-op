@@ -1,5 +1,3 @@
-hostNetwork:
-  enabled: true
 args:
   - --kubelet-preferred-address-types=InternalIP
   - --kubelet-insecure-tls
