@@ -1,4 +1,3 @@
-containerPort: 4443
 args:
   - --kubelet-preferred-address-types=InternalIP
   - --kubelet-insecure-tls
