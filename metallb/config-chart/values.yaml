@@ -1,6 +1,6 @@
 ipPool:
   name: default-address-pool
-  range: 10.128.3.1-10.128.3.254
+  range: 10.240.3.1-10.240.3.250
 
 l2:
   name: default-l2
