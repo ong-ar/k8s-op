@@ -17,6 +17,7 @@ helm install metallb metallb/metallb \
   -n metallb-system --create-namespace
 
 helm install metallb-config ./config-chart -n metallb-system
+helm uninstall metallb-config -n metallb-system
 ```
 
 ```bash

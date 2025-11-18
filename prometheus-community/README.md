@@ -13,12 +13,12 @@ helm repo update
 
 ```bash
 helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
-  --version 77.11.1 \
+  --version 79.5.0 \
   -n monitoring --create-namespace \
   -f values.yaml
 
 helm upgrade kube-prometheus-stack prometheus-community/kube-prometheus-stack \
-  --version 77.11.1 \
+  --version 79.5.0 \
   -n monitoring --create-namespace \
   -f values.yaml
 

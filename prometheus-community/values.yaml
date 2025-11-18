@@ -23,7 +23,7 @@ grafana:
     storageClassName: longhorn        # Longhorn 스토리지 지정
     accessModes:
       - ReadWriteOnce
-    size: 2Gi # 10Gi 으로 추후 변경해야함
+    size: 10Gi # 10Gi 으로 추후 변경해야함
   service:
     type: LoadBalancer
     port: 9091  # 기존 설정과 일치
@@ -37,7 +37,7 @@ alertmanager:
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
-              storage: 2Gi # 5Gi 으로 추후 변경해야함
+              storage: 5Gi # 5Gi 으로 추후 변경해야함
   service:
     type: LoadBalancer
     port: 9093

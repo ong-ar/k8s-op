@@ -31,12 +31,12 @@ helm repo update
 ```bash
 helm install longhorn longhorn/longhorn \
   --namespace longhorn-system --create-namespace \
-  --version 1.10.0 \
+  --version 1.10.1 \
   -f values.yaml
 
 helm upgrade longhorn longhorn/longhorn \
   --namespace longhorn-system \
-  --version 1.10.0 \
+  --version 1.10.1 \
   -f values.yaml
 ```
 
