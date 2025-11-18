@@ -3,9 +3,8 @@ kind: Ingress
 metadata:
   name: demo-hosts
   namespace: ingress-demo
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
 spec:
+  ingressClassName: nginx
   rules:
     - host: app1.dev.example.com
       http:
