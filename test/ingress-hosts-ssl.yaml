@@ -10,13 +10,13 @@ spec:
 
   tls:
     - hosts:
-        - app1.archiania.app
-        - app2.archiania.app
-        - admin.archiania.app
-      secretName: archiania-apps-tls   # cert-manager가 자동 생성하는 TLS Secret
+        - app1.archainia.app
+        - app2.archainia.app
+        - admin.archainia.app
+      secretName: archainia-apps-tls   # cert-manager가 이 이름으로 Secret 생성
 
   rules:
-    - host: app1.archiania.app
+    - host: app1.archainia.app
       http:
         paths:
           - path: /
@@ -27,7 +27,7 @@ spec:
                 port:
                   number: 80
 
-    - host: app2.archiania.app
+    - host: app2.archainia.app
       http:
         paths:
           - path: /
@@ -38,7 +38,7 @@ spec:
                 port:
                   number: 80
 
-    - host: admin.archiania.app
+    - host: admin.archainia.app
       http:
         paths:
           - path: /
