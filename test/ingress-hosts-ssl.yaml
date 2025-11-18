@@ -1,0 +1,50 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demo-hosts
+  namespace: ingress-demo
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-http"
+spec:
+  ingressClassName: nginx
+
+  tls:
+    - hosts:
+        - app1.archiania.app
+        - app2.archiania.app
+        - admin.archiania.app
+      secretName: archiania-apps-tls   # cert-manager가 자동 생성하는 TLS Secret
+
+  rules:
+    - host: app1.archiania.app
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app1
+                port:
+                  number: 80
+
+    - host: app2.archiania.app
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app2
+                port:
+                  number: 80
+
+    - host: admin.archiania.app
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: admin
+                port:
+                  number: 80
