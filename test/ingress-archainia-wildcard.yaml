@@ -4,8 +4,8 @@ metadata:
   name: archainia-wildcard-ingress
   namespace: ingress-demo
   annotations:
-    kubernetes.io/ingress.class: "nginx"
 spec:
+  ingressClassName: nginx
   tls:
     - hosts:
         - archainia.app
