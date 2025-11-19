@@ -14,7 +14,7 @@ spec:
       secretName: archainia-wildcard-tls
 
   rules:
-    - host: longhorn.archainia.app
+    - host: argocd.archainia.app
       http:
         paths:
           - path: /

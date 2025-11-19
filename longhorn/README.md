@@ -38,6 +38,8 @@ helm upgrade longhorn longhorn/longhorn \
   --namespace longhorn-system \
   --version 1.10.1 \
   -f values.yaml
+
+kubectl apply -f ingress.yaml
 ```
 
 ```bash

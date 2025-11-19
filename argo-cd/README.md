@@ -21,6 +21,8 @@ helm upgrade argocd argo/argo-cd \
   --version 8.5.8 \
   -n argo-cd --create-namespace \
   -f values.yaml
+
+kubectl apply -f ingress.yaml
 ```
 
 ```bash
