@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: archainia-wildcard-cert
+  # namespace: ingress-demo
+  # kubectl apply -f certificate-archainia.yaml -n ingress-demo
+spec:
+  secretName: archainia-wildcard-tls
+
+  privateKey:
+    rotationPolicy: Always
+
+  dnsNames:
+    - archainia.app
+    - "*.archainia.app"
+
+  issuerRef:
+    name: letsencrypt-issuer-archainia-app
+    kind: ClusterIssuer

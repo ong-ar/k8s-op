@@ -13,7 +13,7 @@ prometheus:
     walCompression: true
     enableAdminAPI: false
   service:
-    type: LoadBalancer
+    type: ClusterIP
     port: 9090
 
 grafana:
@@ -25,7 +25,7 @@ grafana:
       - ReadWriteOnce
     size: 10Gi # 10Gi 으로 추후 변경해야함
   service:
-    type: LoadBalancer
+    type: ClusterIP
     port: 9091  # 기존 설정과 일치
 
 alertmanager:
@@ -39,5 +39,5 @@ alertmanager:
             requests:
               storage: 5Gi # 5Gi 으로 추후 변경해야함
   service:
-    type: LoadBalancer
+    type: ClusterIP
     port: 9093

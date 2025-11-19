@@ -11,5 +11,5 @@ defaultSettings:
 
 service:
   ui:
-    type: LoadBalancer             # Longhorn UI를 LoadBalancer로 노출 (MetalLB가 External-IP 할당)
-    port: 80                       # Longhorn UI 접근 포트
+    type: ClusterIP
+    port: 80
