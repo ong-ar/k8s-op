@@ -12,6 +12,7 @@ spec:
         - app1.archainia.app
         - app2.archainia.app
         - admin.archainia.app
+        - app1.test.archainia.app
       secretName: archainia-wildcard-tls
   rules:
     - host: app1.archainia.app
@@ -44,5 +45,16 @@ spec:
             backend:
               service:
                 name: admin
+                port:
+                  number: 80
+    
+    - host: app1.test.archainia.app
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app1
                 port:
                   number: 80
