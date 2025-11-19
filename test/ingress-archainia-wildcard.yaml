@@ -21,7 +21,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: app1-service
+                name: app1
                 port:
                   number: 80
 
@@ -32,7 +32,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: app2-service
+                name: app2
                 port:
                   number: 80
 
@@ -43,6 +43,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: admin-service
+                name: admin
                 port:
                   number: 80
