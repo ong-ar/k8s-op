@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: archainia-wildcard-cert
+  namespace: ingress-nginx     # 필요 시 수정
+spec:
+  secretName: archainia-wildcard-tls
+  dnsNames:
+    - archainia.app
+    - "*.archainia.app"
+  issuerRef:
+    name: letsencrypt-dns01-archainia
+    kind: ClusterIssuer
