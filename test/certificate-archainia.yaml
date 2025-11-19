@@ -12,6 +12,7 @@ spec:
   dnsNames:
     - archainia.app
     - "*.archainia.app"
+    - "*.test.archainia.app"
 
   issuerRef:
     name: letsencrypt-dns01-archainia
