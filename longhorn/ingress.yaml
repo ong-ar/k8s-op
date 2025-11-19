@@ -4,7 +4,6 @@ metadata:
   name: longhorn-ui-ingress
   namespace: longhorn-system
   annotations:
-    # 필요하면 접근 허용 IP 대역 설정 (예시는 주석 처리, 실제 사용 시 주석 해제하고 수정)
     nginx.ingress.kubernetes.io/whitelist-source-range: "61.77.247.3/32"
 spec:
   ingressClassName: nginx
