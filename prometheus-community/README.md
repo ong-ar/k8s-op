@@ -23,6 +23,8 @@ helm upgrade kube-prometheus-stack prometheus-community/kube-prometheus-stack \
   -f values.yaml
 
 helm uninstall kube-prometheus-stack -n monitoring
+
+kubectl apply -f ingress.yaml
 ```
 
 ```bash
