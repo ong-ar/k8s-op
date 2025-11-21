@@ -12,11 +12,11 @@ helm repo update
 ```
 
 ```bash
-helm install minio-operator minio-operator/operator \
+helm upgrade --install minio-operator minio-operator/operator \
   --version 7.1.1 \
   -n minio-operator --create-namespace
 
-helm install tenant-loki minio-operator/tenant \
+helm upgrade --install tenant-loki minio-operator/tenant \
   --version 7.1.1 \
   -n tenant-loki --create-namespace \
   -f tenant_values.yaml

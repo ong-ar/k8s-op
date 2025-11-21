@@ -11,4 +11,6 @@ helm repo update
 helm upgrade --install sealed-secrets-web bakito/sealed-secrets-web \
   -n sealed-secrets-web --create-namespace \
   -f values.yaml
+
+helm uninstall sealed-secrets-web -n sealed-secrets-web
 ```

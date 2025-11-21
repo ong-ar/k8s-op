@@ -24,18 +24,27 @@ kubectl get secret -n kube-system sealed-secrets-key -o yaml > sealed-secrets-ke
 # 키 파일을 안전한 곳에 보관 (Git에 커밋하지 말 것!)
 ```
 
-### 2. 새 클러스터에 키 복원 (설치 전)
+### 2. 새 클러스터에 키 생성/복원 (설치 전 필수)
 
 ```bash
 # namespace 생성
 kubectl create namespace sealed-secrets
 
-# 백업한 키 복원 (sealed-secrets 설치 전에 미리 생성)
-kubectl apply -f sealed-secrets-key.yaml -n sealed-secrets
+# sealed-secrets-key Secret 생성 (설치 전에 반드시 실행)
+# create-secret-key.yaml 파일에 실제 tls.crt와 tls.key 값을 입력한 후 적용
+kubectl apply -f create-secret-key.yaml -n sealed-secrets
+
+# 또는 기존 클러스터에서 백업한 키를 복원하는 경우
+# kubectl apply -f sealed-secrets-key.yaml -n sealed-secrets
 
 # 또는 kube-system에 복원하는 경우
-kubectl apply -f sealed-secrets-key.yaml -n kube-system
+# kubectl apply -f sealed-secrets-key.yaml -n kube-system
 ```
+
+**중요**:
+
+- `create-secret-key.yaml` 파일에 실제 `tls.crt`와 `tls.key` 값을 입력해야 합니다.
+- 이 파일은 sealed-secrets 설치 전에 반드시 적용해야 합니다.
 
 ### 3. Sealed Secrets 설치
 
@@ -44,6 +53,8 @@ helm upgrade --install sealed-secrets sealed-secrets/sealed-secrets \
   -n sealed-secrets --create-namespace \
   --version 2.17.9 \
   -f values.yaml
+
+helm uninstall sealed-secrets -n sealed-secrets
 ```
 
 **참고**:

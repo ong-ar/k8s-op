@@ -12,7 +12,7 @@ helm repo update
 ```
 
 ```bash
-helm install argocd argo/argo-cd \
+helm upgrade --install argocd argo/argo-cd \
   --version 8.5.8 \
   -n argo-cd --create-namespace \
   -f values.yaml

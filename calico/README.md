@@ -12,7 +12,7 @@ helm repo update
 ```
 
 ```bash
-helm install calico projectcalico/tigera-operator \
+helm upgrade --install calico projectcalico/tigera-operator \
   --version 3.31.0 \
   -n tigera-operator --create-namespace \
   -f values.yaml

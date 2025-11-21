@@ -12,11 +12,11 @@ helm repo update
 ```
 
 ```bash
-helm install metallb metallb/metallb \
+helm upgrade --install metallb metallb/metallb \
   --version 0.15.2 \
   -n metallb-system --create-namespace
 
-helm install metallb-config ./config-chart -n metallb-system
+helm upgrade --install metallb-config ./config-chart -n metallb-system
 helm uninstall metallb-config -n metallb-system
 ```
 

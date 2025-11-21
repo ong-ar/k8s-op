@@ -12,7 +12,7 @@ helm repo update
 ```
 
 ```bash
-helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
+helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
   --version 79.5.0 \
   -n monitoring --create-namespace \
   -f values.yaml
