@@ -53,14 +53,14 @@ git-ops/infra/
 **1. Argo CD 설치할 때:**
 
 ```bash
-helm install -n argocd  # Argo CD가 argocd namespace에 설치됨
+helm install -n argo-cd  # Argo CD가 argo-cd namespace에 설치됨
 ```
 
 **2. AppProject/Application 만들 때:**
 
 ```yaml
 metadata:
-  namespace: argocd # 반드시 위와 같은 namespace (argocd)
+  namespace: argo-cd # 반드시 위와 같은 namespace (argo-cd)
 ```
 
 → Argo CD는 자신이 설치된 namespace에서만 AppProject/Application을 찾음
@@ -77,7 +77,7 @@ spec:
 
 ### 핵심만 기억하기
 
-- `helm install -n argocd` = `metadata.namespace: argocd` (둘 다 `argocd`로 통일)
+- `helm install -n argo-cd` = `metadata.namespace: argo-cd` (둘 다 `argo-cd`로 통일)
 - `spec.destination.namespace` = 실제 배포할 곳 (각각 다름)
 
 ## 배포 순서
@@ -148,8 +148,84 @@ sync-waves를 사용하여 실행 순서를 보장합니다.
 
 Bootstrap으로 설치한 컴포넌트를 Argo CD로 전환하려면:
 
-1. Git에 현재 상태 커밋
-2. Application 생성
-3. Argo CD가 자동으로 동기화
+### 1. 현재 설치 상태 확인
+
+먼저 현재 설치된 Helm release의 values를 확인합니다:
+
+```bash
+# 예: cert-manager의 현재 values 확인
+helm get values cert-manager -n cert-manager
+
+# 예: ingress-nginx의 현재 values 확인
+helm get values ingress-nginx -n ingress-nginx
+```
+
+### 2. Git의 values.yaml과 일치시키기
+
+**중요**: Git에 있는 `values.yaml`이 현재 설치된 상태와 **일치**해야 합니다.
+
+- 현재 설치된 values와 다르면 → Git의 values.yaml을 현재 상태에 맞게 수정
+- 또는 현재 설치된 상태를 Git의 values.yaml에 맞게 변경 (권장하지 않음)
+
+### 3. Application 생성
+
+```bash
+kubectl apply -f git-ops/infra/<component>/application.yaml
+```
+
+### 4. Argo CD 동작 확인
+
+Application을 생성하면 Argo CD는:
+
+1. **Git 상태와 클러스터 상태 비교**
+
+   - 일치하면 → `Synced` 상태 (문제없음)
+   - 다르면 → `OutOfSync` 상태
+
+2. **automated sync가 켜져 있으면**
+
+   - `OutOfSync` 상태일 때 자동으로 Git 상태로 동기화 시도
+   - **주의**: 현재 설정과 다르면 자동으로 변경됨!
+
+3. **리소스 관리 시작**
+   - Argo CD가 리소스를 관리하기 시작
+   - 이후 모든 변경은 Git을 통해 관리
+
+### 주의사항
+
+⚠️ **자동 동기화 주의**:
+
+- `syncPolicy.automated`가 켜져 있으면 Git 상태와 다를 때 자동으로 변경됩니다
+- 처음 전환할 때는 `automated`를 잠시 끄고, 상태 확인 후 켜는 것을 권장합니다
+
+```yaml
+# 처음 전환 시 (수동 확인용)
+syncPolicy:
+  automated: false  # 수동으로 sync
+
+# 상태 확인 후
+syncPolicy:
+  automated:
+    prune: true
+    selfHeal: true
+```
+
+### 예시: cert-manager 전환
+
+```bash
+# 1. 현재 values 확인
+helm get values cert-manager -n cert-manager > current-values.yaml
+
+# 2. Git의 values.yaml과 비교
+diff current-values.yaml git-ops/infra/cert-manager/values.yaml
+
+# 3. 필요시 Git의 values.yaml 수정하여 현재 상태와 일치시키기
+
+# 4. Application 생성
+kubectl apply -f git-ops/infra/cert-manager/application.yaml
+
+# 5. Argo CD에서 상태 확인
+kubectl get application cert-manager -n argo-cd
+```
 
 이제 모든 변경사항은 Git을 통해 관리됩니다.
