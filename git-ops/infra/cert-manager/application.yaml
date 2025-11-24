@@ -7,18 +7,20 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: infrastructure
-  # Argo CD 2.6+ Multiple Sources 사용 (Helm repository + Git values)
-  sources:
-    - repoURL: https://charts.jetstack.io
-      chart: cert-manager
-      targetRevision: 1.19.1
-    - repoURL: https://github.com/ong-ar/k8s-op  # Git repository URL로 변경 필요
-      path: git-ops/infra/cert-manager
-      targetRevision: main
-      kustomize: {}  # kustomization.yaml 사용 (application.yaml과 values.yaml 제외)
+  # cert-manager Helm chart는 수동 설치 (helm install)
+  # Argo CD는 resources만 관리 (ClusterIssuer, Certificate 등)
+  source:
+    repoURL: https://github.com/ong-ar/k8s-op
+    path: git-ops/infra/cert-manager
+    targetRevision: main
+    kustomize: {}  # kustomization.yaml 사용 (resources만 관리)
   destination:
     server: https://kubernetes.default.svc
-    namespace: cert-manager
+    # namespace는 필수 필드이지만:
+    # - ClusterIssuer (cluster-scoped): namespace 무시됨
+    # - Certificate (namespace-scoped): 각 리소스의 metadata.namespace에 따라 배포됨
+    # 따라서 어떤 값이든 상관없지만, 기본값으로 설정
+    namespace: default
   syncPolicy:
     # automated를 제거하면 수동 동기화 (자동 동기화 끄기)
     syncOptions:

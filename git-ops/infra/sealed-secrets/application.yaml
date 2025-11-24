@@ -7,22 +7,18 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: infrastructure
-  # Argo CD 2.6+ Multiple Sources 사용 (Helm repository + Git values)
-  sources:
-    - repoURL: https://bitnami-labs.github.io/sealed-secrets
-      chart: sealed-secrets
-      targetRevision: 2.17.9
-    - repoURL: https://github.com/ong-ar/k8s-op  # Git repository URL로 변경 필요
-      path: git-ops/infra/sealed-secrets
-      targetRevision: main
-      kustomize: {}  # kustomization.yaml 사용 (application.yaml과 values.yaml 제외)
+  # Sealed Secrets Helm chart는 수동 설치 (helm install)
+  # Argo CD는 resources만 관리 (create-secret-key.yaml 등)
+  source:
+    repoURL: https://github.com/ong-ar/k8s-op
+    path: git-ops/infra/sealed-secrets
+    targetRevision: main
+    kustomize: {}  # kustomization.yaml 사용 (resources만 관리)
   destination:
     server: https://kubernetes.default.svc
-    namespace: sealed-secrets
+    namespace: default  # resources의 namespace에 따라 배포됨
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+    # automated 없음 = 수동 동기화
     syncOptions:
       - CreateNamespace=true
 

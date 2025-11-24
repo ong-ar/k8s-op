@@ -7,25 +7,18 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: infrastructure
-  # Argo CD 2.6+ Multiple Sources 사용 (Helm repository + Git values)
-  sources:
-    - repoURL: https://kubernetes.github.io/ingress-nginx
-      chart: ingress-nginx
-      targetRevision: 4.14.0
-    - repoURL: https://github.com/ong-ar/k8s-op  # Git repository URL로 변경 필요
-      path: git-ops/infra/ingress-nginx
-      targetRevision: main
-      helm:
-        valueFiles:
-          - values.yaml
-      # kustomize는 사용하지 않음 (YAML 리소스 없음)
+  # Ingress NGINX Helm chart는 수동 설치 (helm install)
+  # Argo CD는 resources만 관리 (ingress 등)
+  source:
+    repoURL: https://github.com/ong-ar/k8s-op
+    path: git-ops/infra/ingress-nginx
+    targetRevision: main
+    kustomize: {}  # kustomization.yaml 사용 (resources만 관리)
   destination:
     server: https://kubernetes.default.svc
-    namespace: ingress-nginx
+    namespace: default  # resources의 namespace에 따라 배포됨
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+    # automated 없음 = 수동 동기화
     syncOptions:
       - CreateNamespace=true
 

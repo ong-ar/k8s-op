@@ -1,3 +1,0 @@
-resources: []
-  # values.yaml은 Helm values이므로 kustomize resources에 포함하지 않음
-
