@@ -2,7 +2,5 @@ resources:
   - resources/create-secret-key-json.yaml
   - resources/cluster-issuer.yaml
   - resources/certificate-argo-cd.yaml
-  - resources/certificate-longhorn.yaml
-  - resources/certificate-monitoring.yaml
   # application.yaml과 values.yaml은 제외 (Helm values는 별도로 관리)
 
