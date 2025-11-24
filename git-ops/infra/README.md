@@ -6,32 +6,54 @@ Argo CD로 관리하는 인프라 컴포넌트들입니다.
 
 ```
 git-ops/infra/
-├── app-project.yaml          # AppProject 정의
+├── app-project.yaml          # AppProject 정의 (infra-structure)
 ├── calico/
-│   ├── application.yaml      # resources만 관리 (Helm chart는 수동 설치)
-│   ├── values.yaml           # 참고용 (Helm 수동 설치 시 사용)
-│   └── kustomization.yaml
+│   ├── application.yaml      # Helm chart 설치 + resources 관리
+│   ├── kustomization.yaml
+│   └── resources/
 ├── ingress-nginx/
-│   ├── application.yaml      # resources만 관리 (Helm chart는 수동 설치)
-│   ├── values.yaml           # 참고용 (Helm 수동 설치 시 사용)
+│   ├── application.yaml      # Helm chart 설치 + resources 관리
 │   └── kustomization.yaml
 ├── sealed-secrets/
-│   ├── application.yaml      # resources만 관리 (Helm chart는 수동 설치)
-│   ├── values.yaml           # 참고용 (Helm 수동 설치 시 사용)
+│   ├── application.yaml      # Helm chart 설치 + resources 관리
 │   ├── kustomization.yaml
 │   └── resources/
 │       └── create-secret-key.yaml
 ├── cert-manager/
-│   ├── application.yaml      # resources만 관리 (Helm chart는 수동 설치)
-│   ├── values.yaml           # 참고용 (사용 안 함)
+│   ├── application.yaml      # Helm chart 설치 + resources 관리
 │   ├── kustomization.yaml
 │   └── resources/
 │       ├── create-secret-key-json.yaml
 │       ├── cluster-issuer.yaml
 │       └── certificate-*.yaml
-└── argo-cd/
-    ├── application.yaml      # resources만 관리 (Helm chart는 수동 설치)
-    ├── values.yaml           # 참고용 (Helm 수동 설치 시 사용)
+├── argo-cd/
+│   ├── application.yaml      # Helm chart 설치 + resources 관리
+│   ├── kustomization.yaml
+│   └── resources/
+│       └── ingress.yaml
+├── longhorn/
+│   ├── application.yaml      # Helm chart 설치 + resources 관리
+│   ├── kustomization.yaml
+│   └── resources/
+│       └── ingress.yaml
+├── metrics-server/
+│   ├── application.yaml      # Helm chart 설치 + resources 관리
+│   └── kustomization.yaml
+├── prometheus-community/
+│   ├── application.yaml      # Helm chart 설치 + resources 관리
+│   ├── kustomization.yaml
+│   └── resources/
+│       └── ingress.yaml
+├── minio/
+│   ├── application.yaml      # minio-operator + minio-tenant (2개 Application)
+│   ├── kustomization.yaml
+│   └── resources/
+├── loki/
+│   ├── application.yaml      # loki + promtail (2개 Application)
+│   ├── kustomization.yaml
+│   └── resources/
+└── sealed-secrets-web/
+    ├── application.yaml      # Helm chart 설치 + resources 관리
     ├── kustomization.yaml
     └── resources/
         └── ingress.yaml
@@ -39,12 +61,13 @@ git-ops/infra/
 
 **구조 설명:**
 
-- `application.yaml`: Argo CD Application manifest (resources만 관리, Helm chart 설치 안 함)
-- `values.yaml`: 참고용 (Helm 수동 설치 시 사용)
+- `application.yaml`: Argo CD Application manifest
+  - **Argo CD 2.6+ Multiple Sources** 사용: Helm repository (chart 설치) + Git repository (resources 관리)
+  - Helm chart 설치와 Kubernetes resources를 함께 관리
 - `kustomization.yaml`: Kustomize 설정 (resources 폴더의 YAML 파일들 참조)
 - `resources/`: Kubernetes 리소스 YAML 파일들 (Ingress, Certificate, Secret 등)
 
-**중요**: 모든 컴포넌트는 **수동으로 Helm 설치**하고, Argo CD는 **resources만 관리**합니다.
+**중요**: 모든 컴포넌트는 **Argo CD가 Helm chart 설치와 resources를 함께 관리**합니다.
 
 ## Namespace 필드 설명
 
@@ -93,7 +116,7 @@ kubectl apply -f git-ops/infra/app-project.yaml
 각 Application을 생성합니다:
 
 ```bash
-# Bootstrap 컴포넌트들
+# Bootstrap 컴포넌트들 (의존성 순서대로)
 kubectl apply -f git-ops/infra/calico/application.yaml
 kubectl apply -f git-ops/infra/ingress-nginx/application.yaml
 kubectl apply -f git-ops/infra/sealed-secrets/application.yaml
@@ -101,6 +124,14 @@ kubectl apply -f git-ops/infra/cert-manager/application.yaml
 
 # Argo CD 자체 (이미 설치된 경우 선택적)
 kubectl apply -f git-ops/infra/argo-cd/application.yaml
+
+# 추가 인프라 컴포넌트들
+kubectl apply -f git-ops/infra/longhorn/application.yaml
+kubectl apply -f git-ops/infra/metrics-server/application.yaml
+kubectl apply -f git-ops/infra/prometheus-community/application.yaml
+kubectl apply -f git-ops/infra/minio/application.yaml
+kubectl apply -f git-ops/infra/loki/application.yaml
+kubectl apply -f git-ops/infra/sealed-secrets-web/application.yaml
 ```
 
 또는 한 번에:
@@ -111,30 +142,44 @@ find git-ops/infra -name "application.yaml" -exec kubectl apply -f {} \;
 
 ## Git Repository URL 설정
 
-모든 Application manifest에서 `<GIT_REPO_URL>`을 실제 Git repository URL로 변경해야 합니다:
+모든 Application manifest에서 Git repository URL이 올바르게 설정되어 있는지 확인하세요:
 
 ```bash
-find git-ops/infra -name "application.yaml" -exec sed -i '' 's|<GIT_REPO_URL>|https://github.com/your-org/k8s-op|g' {} \;
+# 현재 설정 확인
+grep -r "repoURL.*github.com" git-ops/infra/*/application.yaml
+
+# 필요시 수정
+find git-ops/infra -name "application.yaml" -exec sed -i '' 's|https://github.com/ong-ar/k8s-op|https://github.com/your-org/k8s-op|g' {} \;
 ```
 
 ## 관리 방식
 
-### 모든 컴포넌트는 수동 설치 + Resources만 Argo CD 관리
+### Argo CD가 Helm Chart와 Resources를 함께 관리
 
 **원칙**:
 
-- 모든 Helm chart는 **수동으로 설치** (Bootstrap 단계)
-- Argo CD는 **resources만 관리** (Ingress, Certificate, Secret 등)
+- **Argo CD 2.6+ Multiple Sources** 기능 사용
+- Helm repository에서 Helm chart 설치
+- Git repository에서 Kubernetes resources 관리
+- 모든 컴포넌트를 Argo CD가 통합 관리
 
 ### 컴포넌트별 관리 내용
 
-| 컴포넌트           | 수동 설치  | Argo CD 관리               |
-| ------------------ | ---------- | -------------------------- |
-| **calico**         | Helm chart | resources 없음 (현재)      |
-| **ingress-nginx**  | Helm chart | Ingress 등                 |
-| **sealed-secrets** | Helm chart | resources 없음 (현재)      |
-| **cert-manager**   | Helm chart | ClusterIssuer, Certificate |
-| **argo-cd**        | Helm chart | Ingress                    |
+| 컴포넌트                 | Helm Chart 설치          | Argo CD 관리 Resources                                  | Namespace          |
+| ------------------------ | ------------------------ | ------------------------------------------------------- | ------------------ |
+| **calico**               | ✅ tigera-operator       | resources 없음 (현재)                                   | tigera-operator    |
+| **ingress-nginx**        | ✅ ingress-nginx         | resources 없음 (현재)                                   | ingress-nginx      |
+| **sealed-secrets**       | ✅ sealed-secrets        | create-secret-key.yaml                                  | sealed-secrets     |
+| **cert-manager**         | ✅ cert-manager          | create-secret-key-json.yaml, ClusterIssuer, Certificate | cert-manager       |
+| **argo-cd**              | ✅ argo-cd               | ingress.yaml                                            | argo-cd            |
+| **longhorn**             | ✅ longhorn              | ingress.yaml                                            | longhorn-system    |
+| **metrics-server**       | ✅ metrics-server        | resources 없음                                          | kube-system        |
+| **prometheus-community** | ✅ kube-prometheus-stack | ingress.yaml                                            | monitoring         |
+| **minio-operator**       | ✅ operator              | resources 없음                                          | minio-operator     |
+| **minio-tenant**         | ✅ tenant                | resources 없음                                          | tenant-loki        |
+| **loki**                 | ✅ loki                  | resources 없음                                          | loki               |
+| **promtail**             | ✅ promtail              | resources 없음                                          | loki               |
+| **sealed-secrets-web**   | ✅ sealed-secrets-web    | ingress.yaml                                            | sealed-secrets-web |
 
 ### 실행 순서 보장 (cert-manager)
 
@@ -147,27 +192,30 @@ sync-waves를 사용하여 실행 순서를 보장합니다.
 
 ## 주의사항
 
-1. **모든 컴포넌트는 수동 설치**:
-
-   - 모든 Helm chart는 Bootstrap 단계에서 수동으로 설치해야 합니다
-   - Argo CD는 resources만 관리합니다 (Ingress, Certificate, Secret 등)
-
-2. **Git Repository URL**:
+1. **Git Repository URL**:
 
    - 모든 Application에서 Git repository URL이 올바르게 설정되어 있는지 확인하세요
 
-3. **Secret 파일**:
+2. **Secret 파일**:
 
    - `sealed-secrets/resources/create-secret-key.yaml`의 `tls.crt`, `tls.key` 값을 입력해야 합니다
    - `cert-manager/resources/create-secret-key-json.yaml`은 SealedSecret이므로 이미 암호화되어 있습니다
 
-4. **application.yaml 제외**:
+3. **application.yaml 제외**:
 
    - 각 디렉토리의 `kustomization.yaml`에서 `application.yaml`을 제외하여 중복 실행을 방지합니다
 
-5. **의존성**:
+4. **의존성**:
+
    - cert-manager는 sealed-secrets 이후에 배포되어야 합니다 (GCP DNS Key Secret 필요)
    - Argo CD Ingress는 cert-manager와 ingress-nginx 이후에 배포되어야 합니다
+   - minio-tenant는 minio-operator 이후에 배포되어야 합니다
+   - loki는 minio-tenant 이후에 배포되어야 합니다 (S3 backend 사용)
+   - promtail는 loki 이후에 배포되어야 합니다
+
+5. **수동 동기화**:
+   - 모든 Application은 `syncPolicy.automated`가 없어서 수동 동기화입니다
+   - Application 생성 후 Argo CD UI에서 수동으로 Sync를 실행해야 합니다
 
 ## Bootstrap에서 전환하기
 
@@ -208,7 +256,7 @@ spec:
 # 1. cert-manager Helm chart는 이미 수동 설치되어 있다고 가정
 # (Bootstrap 단계에서 설치됨)
 
-# 2. Application 생성 (resources만 관리)
+# 2. Application 생성 (Helm chart + resources 관리)
 kubectl apply -f git-ops/infra/cert-manager/application.yaml
 
 # 3. 상태 확인
@@ -224,15 +272,13 @@ argocd app sync cert-manager
 # 6. 리소스 확인 (sync 후 생성됨)
 kubectl get clusterissuer
 kubectl get certificate -n argo-cd
-kubectl get certificate -n longhorn
-kubectl get certificate -n monitoring
 ```
 
-**참고**: cert-manager Application은 Helm chart를 관리하지 않고, resources(ClusterIssuer, Certificate 등)만 관리합니다.
+**참고**: cert-manager Application은 Helm chart와 resources(ClusterIssuer, Certificate 등)를 모두 관리합니다.
 
 **장점**:
 
-- 기존 수동 설치 유지
+- 기존 수동 설치 유지 가능 (values가 일치하는 경우)
 - Git에서 리소스 정의만 관리
 - 필요할 때만 수동으로 sync
 
@@ -252,12 +298,12 @@ helm get values cert-manager -n cert-manager
 helm get values ingress-nginx -n ingress-nginx
 ```
 
-#### 2. Git의 values.yaml과 일치시키기
+#### 2. Git의 application.yaml values와 일치시키기
 
-**중요**: Git에 있는 `values.yaml`이 현재 설치된 상태와 **일치**해야 합니다.
+**중요**: Git에 있는 `application.yaml`의 `helm.values`가 현재 설치된 상태와 **일치**해야 합니다.
 
-- 현재 설치된 values와 다르면 → Git의 values.yaml을 현재 상태에 맞게 수정
-- 또는 현재 설치된 상태를 Git의 values.yaml에 맞게 변경 (권장하지 않음)
+- 현재 설치된 values와 다르면 → Git의 `application.yaml`의 `helm.values`를 현재 상태에 맞게 수정
+- 또는 현재 설치된 상태를 Git의 values에 맞게 변경 (권장하지 않음)
 
 #### 3. Application 생성
 
@@ -312,10 +358,10 @@ syncPolicy:
 # 1. 현재 values 확인
 helm get values cert-manager -n cert-manager > current-values.yaml
 
-# 2. Git의 values.yaml과 비교
-diff current-values.yaml git-ops/infra/cert-manager/values.yaml
+# 2. Git의 application.yaml의 helm.values와 비교
+# (application.yaml에서 helm.values 부분 확인)
 
-# 3. 필요시 Git의 values.yaml 수정하여 현재 상태와 일치시키기
+# 3. 필요시 Git의 application.yaml의 helm.values 수정하여 현재 상태와 일치시키기
 
 # 4. Application 생성
 kubectl apply -f git-ops/infra/cert-manager/application.yaml
