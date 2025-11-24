@@ -1,4 +1,0 @@
-apiVersion: v2
-name: metallb-config
-version: 0.1.0
-description: Metallb IP pool and L2Advertisement config

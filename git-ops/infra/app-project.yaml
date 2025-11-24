@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: infrastructure
+  namespace: argocd
+spec:
+  description: Infrastructure components managed by Argo CD
+  sourceRepos:
+    - '*'  # 모든 Git repository 허용 (필요시 특정 repo로 제한 가능)
+  destinations:
+    - namespace: '*'
+      server: '*'  # 모든 namespace와 cluster 허용
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+

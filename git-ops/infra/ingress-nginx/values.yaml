@@ -1,0 +1,19 @@
+controller:
+  kind: DaemonSet
+
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
+
+  service:
+    enabled: false  # hostNetwork로 80/443 바로 열 거라 Service 안 씀
+
+  # 필요하면 로그 레벨 등 추가
+  config:
+    use-forwarded-headers: "true"
+
+  metrics:
+    enabled: false
+
+defaultBackend:
+  enabled: true
+

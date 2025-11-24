@@ -1,0 +1,4 @@
+resources:
+  - resources/create-secret-key.yaml
+  # application.yaml과 values.yaml은 제외 (Helm values는 별도로 관리)
+

@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: calico
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infrastructure
+  # Argo CD 2.6+ Multiple Sources 사용 (Helm repository + Git values)
+  sources:
+    - repoURL: https://projectcalico.docs.tigera.io/charts
+      chart: tigera-operator
+      targetRevision: 3.31.0
+    - repoURL: https://github.com/ong-ar/k8s-op  # Git repository URL로 변경 필요
+      path: git-ops/infra/calico
+      targetRevision: main
+      helm:
+        valueFiles:
+          - values.yaml
+      # kustomize는 사용하지 않음 (YAML 리소스 없음)
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tigera-operator
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
