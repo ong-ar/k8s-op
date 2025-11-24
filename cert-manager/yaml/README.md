@@ -6,10 +6,8 @@ kubectl apply -f create-cluster-issuer-archainia.yaml
 kubectl apply -f certificate-archainia.yaml -n longhorn-system
 kubectl apply -f certificate-archainia.yaml -n monitoring
 kubectl apply -f certificate-archainia.yaml -n argo-cd
-kubectl apply -f certificate-archainia.yaml -n ingress-demo
-kubectl apply -f certificate-archainia.yaml -n ingress-demo
-kubectl apply -f certificate-archainia.yaml -n ingress-demo
-kubectl apply -f certificate-archainia.yaml -n ingress-demo
+kubectl apply -f certificate-archainia.yaml -n akkadia-production
+kubectl apply -f certificate-archainia.yaml -n akkadia-staging
 ```
 
 # Check
