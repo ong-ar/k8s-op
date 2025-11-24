@@ -46,6 +46,40 @@ git-ops/infra/
 - `kustomization.yaml`: Kustomize 설정 (resources 폴더의 YAML 파일들 참조)
 - `resources/`: Kubernetes 리소스 YAML 파일들 (Certificate, Ingress, Secret 등)
 
+## Namespace 필드 설명
+
+### 간단 정리
+
+**1. Argo CD 설치할 때:**
+
+```bash
+helm install -n argocd  # Argo CD가 argocd namespace에 설치됨
+```
+
+**2. AppProject/Application 만들 때:**
+
+```yaml
+metadata:
+  namespace: argocd # 반드시 위와 같은 namespace (argocd)
+```
+
+→ Argo CD는 자신이 설치된 namespace에서만 AppProject/Application을 찾음
+
+**3. Application이 배포하는 곳:**
+
+```yaml
+spec:
+  destination:
+    namespace: cert-manager # 실제 워크로드는 여기 배포됨
+```
+
+→ 각 Application마다 다른 namespace 사용 (cert-manager, ingress-nginx 등)
+
+### 핵심만 기억하기
+
+- `helm install -n argocd` = `metadata.namespace: argocd` (둘 다 `argocd`로 통일)
+- `spec.destination.namespace` = 실제 배포할 곳 (각각 다름)
+
 ## 배포 순서
 
 ### 1. AppProject 생성
