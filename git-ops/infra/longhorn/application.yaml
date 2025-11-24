@@ -27,6 +27,8 @@ spec:
             ui:
               type: ClusterIP
               port: 80
+          preUpgradeChecker:
+            jobEnabled: false
     - repoURL: https://github.com/ong-ar/k8s-op
       path: git-ops/infra/longhorn
       targetRevision: main
