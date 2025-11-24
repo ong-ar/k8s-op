@@ -23,7 +23,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: sealed-secrets
   syncPolicy:
-    # automated 없음 = 수동 동기화
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
 
