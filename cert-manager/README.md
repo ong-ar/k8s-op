@@ -3,7 +3,7 @@
 ## commands
 
 ```bash
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo add cert-manager https://charts.jetstack.io
 helm repo update
 ```
 

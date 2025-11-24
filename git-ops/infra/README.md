@@ -201,13 +201,17 @@ Application을 생성하면 Argo CD는:
 ```yaml
 # 처음 전환 시 (수동 확인용)
 syncPolicy:
-  automated: false  # 수동으로 sync
+  # automated 필드를 제거하면 수동 동기화
+  syncOptions:
+    - CreateNamespace=true
 
-# 상태 확인 후
+# 상태 확인 후 (자동 동기화 활성화)
 syncPolicy:
   automated:
     prune: true
     selfHeal: true
+  syncOptions:
+    - CreateNamespace=true
 ```
 
 ### 예시: cert-manager 전환

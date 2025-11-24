@@ -10,7 +10,7 @@ spec:
   # Argo CD 2.6+ Multiple Sources 사용 (Helm repository + Git values)
   sources:
     - repoURL: https://charts.jetstack.io
-      chart: cert-manager
+      chart: jetstack/cert-manager
       targetRevision: 1.19.1
     - repoURL: https://github.com/ong-ar/k8s-op  # Git repository URL로 변경 필요
       path: git-ops/infra/cert-manager
@@ -20,8 +20,6 @@ spec:
     server: https://kubernetes.default.svc
     namespace: cert-manager
   syncPolicy:
-    automated: false
-      # prune: true
-      # selfHeal: true
+    # automated를 제거하면 수동 동기화 (자동 동기화 끄기)
     syncOptions:
       - CreateNamespace=true
