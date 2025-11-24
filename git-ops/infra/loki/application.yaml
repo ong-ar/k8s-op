@@ -1,0 +1,117 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki
+  namespace: argo-cd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infrastructure
+  # Loki Helm chart 설치
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: loki
+    targetRevision: 6.41.1
+    helm:
+      values: |
+        loki:
+          commonConfig:
+            replication_factor: 1
+          schemaConfig:
+            configs:
+              - from: "2024-04-01"
+                store: tsdb
+                object_store: s3
+                schema: v13
+                index:
+                  prefix: loki_index_
+                  period: 24h
+          storage:
+            type: s3
+            bucketNames:
+              chunks: loki-chunks
+              ruler: loki-ruler
+              admin: loki-admin
+            s3:
+              endpoint: http://tenant-loki-hl.tenant-loki.svc.cluster.local:9000
+              region: us-east-1
+              accessKeyId: WSlYsQi4TgXDRYBNIcBh
+              secretAccessKey: ruekPWYy5mcUEduckC4rHjdwEAYGdO7MQFtF53gE
+              s3ForcePathStyle: true
+              insecure: true
+        minio:
+          enabled: false
+        deploymentMode: SingleBinary
+        singleBinary:
+          replicas: 1
+          persistence:
+            enabled: true
+            storageClass: longhorn
+            accessModes: 
+              - ReadWriteOnce
+            size: 5Gi
+        backend:
+          replicas: 0
+        read:
+          replicas: 0
+        write:
+          replicas: 0
+        ingester:
+          replicas: 0
+        querier:
+          replicas: 0
+        queryFrontend:
+          replicas: 0
+        queryScheduler:
+          replicas: 0
+        distributor:
+          replicas: 0
+        compactor:
+          replicas: 0
+        indexGateway:
+          replicas: 0
+          joinMemberlist: false
+        bloomCompactor:
+          replicas: 0
+        bloomGateway:
+          replicas: 0
+        chunksCache:
+          enabled: false
+        resultsCache:
+          enabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: loki
+  syncPolicy:
+    # automated 없음 = 수동 동기화
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: promtail
+  namespace: argo-cd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infrastructure
+  # Promtail Helm chart 설치
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: promtail
+    targetRevision: 6.17.0
+    helm:
+      values: |
+        config:
+          clients:
+            - url: http://loki.loki.svc.cluster.local:3100/loki/api/v1/push
+              tenant_id: 1
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: loki
+  syncPolicy:
+    # automated 없음 = 수동 동기화
+    syncOptions:
+      - CreateNamespace=true
+

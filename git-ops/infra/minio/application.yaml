@@ -1,0 +1,67 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minio-operator
+  namespace: argo-cd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infrastructure
+  # MinIO Operator Helm chart 설치
+  source:
+    repoURL: https://operator.min.io
+    chart: operator
+    targetRevision: 7.1.1
+    helm:
+      values: |
+        # 기본 values 사용
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: minio-operator
+  syncPolicy:
+    # automated 없음 = 수동 동기화
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minio-tenant
+  namespace: argo-cd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infrastructure
+  # MinIO Tenant Helm chart 설치
+  source:
+    repoURL: https://operator.min.io
+    chart: tenant
+    targetRevision: 7.1.1
+    helm:
+      values: |
+        tenant:
+          name: tenant-loki
+          namespace: tenant-loki
+          configSecret:
+            name: tenant-loki-creds-secret
+            accessKey: "minioadmin"
+            secretKey: "minioadminpw"
+          pools:
+            - name: pool-0
+              servers: 4
+              volumesPerServer: 1
+              size: 2Gi
+              storageClassName: longhorn
+          exposeServices:
+            console: true
+            minio: true
+          certificate:
+            requestAutoCert: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tenant-loki
+  syncPolicy:
+    # automated 없음 = 수동 동기화
+    syncOptions:
+      - CreateNamespace=true
+
