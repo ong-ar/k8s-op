@@ -13,11 +13,13 @@ spec:
       chart: tigera-operator
       targetRevision: 3.31.0
       helm:
-        valueFiles:
-          - $values/git-ops/infra/calico/values.yaml
-    - repoURL: https://github.com/ong-ar/k8s-op  # Git repository URL로 변경 필요
-      targetRevision: main
-      ref: values
+        values: |
+          installation:
+            enabled: true
+
+            calicoNetwork:
+              ipPools:
+                - cidr: 192.168.0.0/16
   
   destination:
     server: https://kubernetes.default.svc
