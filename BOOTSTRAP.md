@@ -120,6 +120,9 @@ TLS 인증서 자동 발급을 위한 cert-manager입니다.
 ```bash
 cd cert-manager
 
+# namespace 생성 (cert-manager 설치 전에 필요)
+kubectl create namespace cert-manager
+
 # Sealed Secret으로 암호화된 GCP DNS Key 적용
 kubectl apply -f create-secret-key-json.yaml
 
@@ -131,6 +134,10 @@ kubectl get secret gcp-dns-key -n cert-manager
 실제 `key.json` 파일이 있다면 다음 명령어로 직접 생성할 수도 있습니다:
 
 ```bash
+# namespace가 없으면 먼저 생성
+kubectl create namespace cert-manager
+
+# Secret 생성
 kubectl create secret generic gcp-dns-key \
   --namespace cert-manager \
   --dry-run=client -o yaml \
@@ -277,8 +284,9 @@ cd ..
 
 echo "=== 4. cert-manager 설치 ==="
 cd cert-manager
+# namespace 생성 (Secret 생성 전에 필요)
 kubectl create namespace cert-manager --dry-run=client -o yaml | kubectl apply -f -
-# GCP DNS Key Secret 생성
+# GCP DNS Key Secret 생성 (namespace 생성 후)
 kubectl apply -f create-secret-key-json.yaml
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
