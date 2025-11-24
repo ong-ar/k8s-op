@@ -1,0 +1,69 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-community
+  namespace: argo-cd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infrastructure
+  # Argo CD 2.6+ Multiple Sources 사용 (Helm repository + Git resources)
+  sources:
+    - repoURL: https://prometheus-community.github.io/helm-charts
+      chart: kube-prometheus-stack
+      targetRevision: 79.5.0
+      helm:
+        values: |
+          prometheus:
+            prometheusSpec:
+              retention: 15d
+              scrapeInterval: 30s
+              storageSpec:
+                volumeClaimTemplate:
+                  spec:
+                    storageClassName: longhorn
+                    accessModes: ["ReadWriteOnce"]
+                    resources:
+                      requests:
+                        storage: 5Gi
+              walCompression: true
+              enableAdminAPI: false
+            service:
+              type: ClusterIP
+              port: 9090
+          grafana:
+            persistence:
+              enabled: true
+              type: pvc
+              storageClassName: longhorn
+              accessModes:
+                - ReadWriteOnce
+              size: 10Gi
+            service:
+              type: ClusterIP
+              port: 9091
+          alertmanager:
+            alertmanagerSpec:
+              storage:
+                volumeClaimTemplate:
+                  spec:
+                    storageClassName: longhorn
+                    accessModes: ["ReadWriteOnce"]
+                    resources:
+                      requests:
+                        storage: 5Gi
+            service:
+              type: ClusterIP
+              port: 9093
+    - repoURL: https://github.com/ong-ar/k8s-op
+      path: git-ops/infra/prometheus-community
+      targetRevision: main
+      kustomize: {}  # kustomization.yaml 사용 (resources만 관리)
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    # automated 없음 = 수동 동기화
+    syncOptions:
+      - CreateNamespace=true
+

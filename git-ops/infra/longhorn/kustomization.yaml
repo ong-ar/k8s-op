@@ -1,0 +1,4 @@
+resources:
+  - resources/ingress.yaml
+  # application.yaml은 제외
+

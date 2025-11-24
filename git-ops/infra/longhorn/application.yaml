@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn
+  namespace: argo-cd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infrastructure
+  # Argo CD 2.6+ Multiple Sources 사용 (Helm repository + Git resources)
+  sources:
+    - repoURL: https://charts.longhorn.io
+      chart: longhorn
+      targetRevision: 1.10.1
+      helm:
+        values: |
+          persistence:
+            defaultClass: true
+            defaultFsType: ext4
+            reclaimPolicy: Delete
+            defaultClassReplicaCount: 1
+          defaultSettings:
+            upgradeChecker: true
+            defaultReplicaCount: '{"v1":"1","v2":"1"}'
+            storageMinimalAvailablePercentage: "10"
+          service:
+            ui:
+              type: ClusterIP
+              port: 80
+    - repoURL: https://github.com/ong-ar/k8s-op
+      path: git-ops/infra/longhorn
+      targetRevision: main
+      kustomize: {}  # kustomization.yaml 사용 (resources만 관리)
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: longhorn-system
+  syncPolicy:
+    # automated 없음 = 수동 동기화
+    syncOptions:
+      - CreateNamespace=true
+

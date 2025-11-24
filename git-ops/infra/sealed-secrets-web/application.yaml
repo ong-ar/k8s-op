@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sealed-secrets-web
+  namespace: argo-cd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infrastructure
+  # Argo CD 2.6+ Multiple Sources 사용 (Helm repository + Git resources)
+  sources:
+    - repoURL: https://charts.bakito.net
+      chart: sealed-secrets-web
+      targetRevision: 1.0.0
+      helm:
+        values: |
+          sealedSecrets:
+            namespace: sealed-secrets
+            serviceName: sealed-secrets
+          disableLoadSecrets: true
+    - repoURL: https://github.com/ong-ar/k8s-op
+      path: git-ops/infra/sealed-secrets-web
+      targetRevision: main
+      kustomize: {}  # kustomization.yaml 사용 (resources만 관리)
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: sealed-secrets-web
+  syncPolicy:
+    # automated 없음 = 수동 동기화
+    syncOptions:
+      - CreateNamespace=true
+
