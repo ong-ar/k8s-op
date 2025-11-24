@@ -3,7 +3,7 @@ kind: ClusterIssuer
 metadata:
   name: letsencrypt-issuer-archainia-app
   annotations:
-    argocd.argoproj.io/sync-wave: "1"  # cert-manager 설치 후 실행
+    argocd.argoproj.io/sync-wave: "5"  # cert-manager 설치 후 실행
 spec:
   acme:
     email: support@archainia.app

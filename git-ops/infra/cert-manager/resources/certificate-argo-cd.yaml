@@ -4,7 +4,7 @@ metadata:
   name: archainia-wildcard-cert
   namespace: argo-cd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  # ClusterIssuer 생성 후 실행
+    argocd.argoproj.io/sync-wave: "10"  # ClusterIssuer 생성 후 실행
 spec:
   secretName: archainia-wildcard-tls
   privateKey:
