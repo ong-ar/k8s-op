@@ -23,9 +23,6 @@ spec:
     server: https://kubernetes.default.svc
     namespace: tigera-operator
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
       - CreateNamespace=true
 
