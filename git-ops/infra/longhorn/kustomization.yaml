@@ -1,5 +1,4 @@
 resources:
-  - resources/service-account.yaml
   - resources/ingress.yaml
   - resources/certificate.yaml
   # application.yaml은 제외
