@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: infrastructure
+  name: infra-structure
   namespace: argo-cd  # AppProject 리소스 자체가 생성되는 namespace (Argo CD가 설치된 namespace)
 spec:
-  description: Infrastructure components managed by Argo CD
+  description: Infra-structure components managed by Argo CD
   sourceRepos:
     - '*'  # 모든 Git repository 허용 (필요시 특정 repo로 제한 가능)
   destinations:

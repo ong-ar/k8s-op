@@ -6,7 +6,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: infrastructure
+  project: infra-structure
   # Argo CD 2.6+ Multiple Sources 사용 (Helm repository)
   source:
     repoURL: https://kubernetes-sigs.github.io/metrics-server/

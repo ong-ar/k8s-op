@@ -6,7 +6,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: infrastructure
+  project: infra-structure
   # Loki Helm chart 설치
   source:
     repoURL: https://grafana.github.io/helm-charts
@@ -95,7 +95,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: infrastructure
+  project: infra-structure
   # Promtail Helm chart 설치
   source:
     repoURL: https://grafana.github.io/helm-charts

@@ -6,7 +6,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: infrastructure
+  project: infra-structure
   # MinIO Operator Helm chart 설치
   source:
     repoURL: https://operator.min.io
@@ -31,7 +31,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: infrastructure
+  project: infra-structure
   # MinIO Tenant Helm chart 설치
   source:
     repoURL: https://operator.min.io

@@ -6,7 +6,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: infrastructure
+  project: infra-structure
   # Argo CD Helm chart는 수동 설치 (helm install)
   # Argo CD는 resources만 관리 (ingress 등)
   source:

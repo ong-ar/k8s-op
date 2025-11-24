@@ -6,17 +6,33 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: infrastructure
-  # Ingress NGINX Helm chart는 수동 설치 (helm install)
-  # Argo CD는 resources만 관리 (ingress 등)
-  source:
-    repoURL: https://github.com/ong-ar/k8s-op
-    path: git-ops/infra/ingress-nginx
-    targetRevision: main
-    kustomize: {}  # kustomization.yaml 사용 (resources만 관리)
+  project: infra-structure
+  # Argo CD 2.6+ Multiple Sources 사용 (Helm repository + Git resources)
+  sources:
+    - repoURL: https://kubernetes.github.io/ingress-nginx
+      chart: ingress-nginx
+      targetRevision: 4.14.0
+      helm:
+        values: |
+          controller:
+            kind: DaemonSet
+            hostNetwork: true
+            dnsPolicy: ClusterFirstWithHostNet
+            service:
+              enabled: false
+            config:
+              use-forwarded-headers: "true"
+            metrics:
+              enabled: false
+          defaultBackend:
+            enabled: true
+    - repoURL: https://github.com/ong-ar/k8s-op
+      path: git-ops/infra/ingress-nginx
+      targetRevision: main
+      kustomize: {}  # kustomization.yaml 사용 (resources만 관리)
   destination:
     server: https://kubernetes.default.svc
-    namespace: default  # resources의 namespace에 따라 배포됨
+    namespace: ingress-nginx
   syncPolicy:
     # automated 없음 = 수동 동기화
     syncOptions:
