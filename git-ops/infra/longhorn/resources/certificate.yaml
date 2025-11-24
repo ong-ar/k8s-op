@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: archainia-wildcard-cert
+  namespace: longhorn-system
+spec:
+  secretName: archainia-wildcard-tls
+  privateKey:
+    rotationPolicy: Always
+  dnsNames:
+    - archainia.app
+    - "*.archainia.app"
+  issuerRef:
+    name: letsencrypt-issuer-archainia-app
+    kind: ClusterIssuer
+
