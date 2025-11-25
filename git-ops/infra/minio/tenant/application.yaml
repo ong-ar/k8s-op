@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minio-tenant
+  namespace: argo-cd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra-structure
+  # Argo CD 2.6+ Multiple Sources 사용 (Helm repository + Git resources)
+  sources:
+    - repoURL: https://operator.min.io
+      chart: tenant
+      targetRevision: 7.1.1
+      helm:
+        values: |
+          tenant:
+            name: tenant-loki
+            namespace: tenant-loki
+            configSecret:
+              name: tenant-loki-creds-secret
+              # accessKey, secretKey 제거 (기존 Secret 사용)
+            pools:
+              - name: pool-0
+                servers: 2
+                volumesPerServer: 2
+                size: 10Gi
+                storageClassName: longhorn
+            exposeServices:
+              console: false
+              minio: false
+            certificate:
+              requestAutoCert: false
+    - repoURL: https://github.com/ong-ar/k8s-op
+      path: git-ops/infra/minio/tenant
+      targetRevision: main
+      kustomize: {}  # kustomization.yaml 사용 (resources만 관리)
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tenant-loki
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true

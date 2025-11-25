@@ -2,9 +2,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: minio-ingress
-  namespace: argo-cd
+  namespace: tenant-loki
   annotations:
     nginx.ingress.kubernetes.io/whitelist-source-range: "61.77.247.3/32"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
   ingressClassName: nginx
 
@@ -21,7 +22,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: minio-console
+                name: tenant-loki-console
                 port:
-                  number: 80
+                  number: 9443
 

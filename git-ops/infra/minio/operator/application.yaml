@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minio-operator
+  namespace: argo-cd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra-structure
+  # Argo CD 2.6+ Multiple Sources 사용 (Helm repository + Git resources)
+  sources:
+    - repoURL: https://operator.min.io
+      chart: operator
+      targetRevision: 7.1.1
+      helm:
+        values: |
+          # 기본 values 사용
+    - repoURL: https://github.com/ong-ar/k8s-op
+      path: git-ops/infra/minio/operator
+      targetRevision: main
+      kustomize: {}  # kustomization.yaml 사용 (resources만 관리)
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: minio-operator
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true

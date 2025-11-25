@@ -48,9 +48,15 @@ git-ops/infra/
 │   └── resources/
 │       └── ingress.yaml
 ├── minio/
-│   ├── application.yaml      # minio-operator + minio-tenant (2개 Application)
-│   ├── kustomization.yaml
-│   └── resources/
+│   ├── operator/
+│   │   ├── application.yaml      # Helm chart 설치 + resources 관리
+│   │   └── kustomization.yaml
+│   └── tenant/
+│       ├── application.yaml      # Helm chart 설치 + resources 관리
+│       ├── kustomization.yaml
+│       └── resources/
+│           ├── sealed-secret-creds.yaml
+│           └── ingress.yaml
 ├── loki/
 │   ├── application.yaml      # loki + promtail (2개 Application)
 │   ├── kustomization.yaml
@@ -133,7 +139,8 @@ kubectl apply -f git-ops/infra/argo-cd/application.yaml
 kubectl apply -f git-ops/infra/longhorn/application.yaml
 kubectl apply -f git-ops/infra/metrics-server/application.yaml
 kubectl apply -f git-ops/infra/prometheus-community/application.yaml
-kubectl apply -f git-ops/infra/minio/application.yaml
+kubectl apply -f git-ops/infra/minio/operator/application.yaml
+kubectl apply -f git-ops/infra/minio/tenant/application.yaml
 kubectl apply -f git-ops/infra/loki/application.yaml
 kubectl apply -f git-ops/infra/sealed-secrets-web/application.yaml
 ```
@@ -181,7 +188,7 @@ find git-ops/infra -name "application.yaml" -exec sed -i '' 's|https://github.co
 | **metrics-server**       | ✅ metrics-server        | resources 없음                                                   | kube-system        |
 | **prometheus-community** | ✅ kube-prometheus-stack | ingress.yaml                                                     | monitoring         |
 | **minio-operator**       | ✅ operator              | resources 없음                                                   | minio-operator     |
-| **minio-tenant**         | ✅ tenant                | resources 없음                                                   | tenant-loki        |
+| **minio-tenant**         | ✅ tenant                | sealed-secret-creds.yaml, ingress.yaml                           | tenant-loki        |
 | **loki**                 | ✅ loki                  | resources 없음                                                   | loki               |
 | **promtail**             | ✅ promtail              | resources 없음                                                   | loki               |
 | **sealed-secrets-web**   | ✅ sealed-secrets-web    | ingress.yaml                                                     | sealed-secrets-web |
@@ -228,9 +235,10 @@ sync-waves를 사용하여 실행 순서를 보장합니다.
    - loki는 minio-tenant 이후에 배포되어야 합니다 (S3 backend 사용)
    - promtail는 loki 이후에 배포되어야 합니다
 
-5. **수동 동기화**:
-   - 모든 Application은 `syncPolicy.automated`가 없어서 수동 동기화입니다
-   - Application 생성 후 Argo CD UI에서 수동으로 Sync를 실행해야 합니다
+5. **자동/수동 동기화**:
+   - 대부분의 Application은 `syncPolicy.automated`가 활성화되어 자동 동기화됩니다
+   - 일부 Application(metrics-server, calico 등)은 수동 동기화로 설정되어 있습니다
+   - Application 생성 후 Argo CD UI에서 상태를 확인하고 필요시 Sync를 실행하세요
 
 ## Bootstrap에서 전환하기
 

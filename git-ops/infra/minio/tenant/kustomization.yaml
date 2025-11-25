@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - resources/sealed-secret-creds.yaml
   - resources/ingress.yaml
+
