@@ -104,7 +104,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: loki
   syncPolicy:
-    # automated 없음 = 수동 동기화
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
@@ -134,7 +136,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: loki
   syncPolicy:
-    # automated 없음 = 수동 동기화
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
