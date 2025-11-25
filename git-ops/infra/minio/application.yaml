@@ -46,13 +46,12 @@ spec:
           namespace: tenant-loki
           configSecret:
             name: tenant-loki-creds-secret
-            accessKey: "minioadmin"
-            secretKey: "minioadminpw"
+            # accessKey, secretKey 제거 (기존 Secret 사용)
           pools:
             - name: pool-0
-              servers: 4
+              servers: 2
               volumesPerServer: 1
-              size: 2Gi
+              size: 20Gi
               storageClassName: longhorn
           exposeServices:
             console: true
@@ -68,4 +67,3 @@ spec:
       - CreateNamespace=true
       - ServerSideApply=true
       - ApplyOutOfSyncOnly=true
-
