@@ -12,7 +12,7 @@ spec:
     - group: apps
       kind: StatefulSet
       jsonPointers:
-        - /spec/volumeClaimTemplates/0/metadata/creationTimestamp
+        - /spec/volumeClaimTemplates
   sources:
     - repoURL: https://grafana.github.io/helm-charts
       chart: loki
