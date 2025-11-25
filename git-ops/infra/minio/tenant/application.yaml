@@ -19,7 +19,7 @@ spec:
             namespace: tenant-loki
             configSecret:
               name: tenant-loki-creds-secret
-              # accessKey, secretKey 제거 (기존 Secret 사용)
+              existingSecret: true
             pools:
               - name: pool-0
                 servers: 2
