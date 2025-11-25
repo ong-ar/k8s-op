@@ -58,11 +58,11 @@ spec:
             minio: true
           certificate:
             requestAutoCert: false
-          services:
-            minio:
-              serviceType: ClusterIP
-            console:
-              serviceType: ClusterIP
+        services:
+          minio:
+            serviceType: ClusterIP
+          console:
+            serviceType: ClusterIP
   destination:
     server: https://kubernetes.default.svc
     namespace: tenant-loki
