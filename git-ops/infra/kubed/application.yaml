@@ -16,8 +16,8 @@ spec:
           kubed:
             # operator 실행 설정
             operator:
-              registry: appscode
-              repository: kubed
+              registry: rancher
+              repository: mirrored-appscode-kubed
               tag: v0.13.2
           # Secret Sync 기능 활성화 (기본값이지만 명시)
           enableConfigSyncer: true
