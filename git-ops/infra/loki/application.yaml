@@ -9,10 +9,10 @@ spec:
   project: infra-structure
   # Argo CD 2.6+ Multiple Sources 사용 (Helm repository + Git resources)
   ignoreDifferences:
-  - group: apps
-    kind: StatefulSet
-    jqPathExpressions:
-      - '.spec.volumeClaimTemplates[].metadata.creationTimestamp'
+    - group: apps
+      kind: StatefulSet
+      jsonPointers:
+        - /spec/volumeClaimTemplates/0/metadata/creationTimestamp
   sources:
     - repoURL: https://grafana.github.io/helm-charts
       chart: loki
