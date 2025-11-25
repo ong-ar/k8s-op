@@ -54,15 +54,10 @@ spec:
               size: 10Gi
               storageClassName: longhorn
           exposeServices:
-            console: true
-            minio: true
+            console: false
+            minio: false
           certificate:
             requestAutoCert: false
-        services:
-          minio:
-            serviceType: ClusterIP
-          console:
-            serviceType: ClusterIP
   destination:
     server: https://kubernetes.default.svc
     namespace: tenant-loki
