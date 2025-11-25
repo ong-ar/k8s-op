@@ -26,7 +26,7 @@ git-ops/infra/
 │       ├── create-secret-key-json.yaml
 │       ├── cluster-issuer.yaml
 │       └── wildcard-certificate.yaml
-├── kubed/
+├── reflector/
 │   ├── application.yaml      # Helm chart 설치 (리소스 동기화)
 │   └── kustomization.yaml
 ├── argo-cd/
@@ -124,7 +124,7 @@ kubectl apply -f git-ops/infra/calico/application.yaml
 kubectl apply -f git-ops/infra/ingress-nginx/application.yaml
 kubectl apply -f git-ops/infra/sealed-secrets/application.yaml
 kubectl apply -f git-ops/infra/cert-manager/application.yaml
-kubectl apply -f git-ops/infra/kubed/application.yaml
+kubectl apply -f git-ops/infra/reflector/application.yaml
 
 # Argo CD 자체 (이미 설치된 경우 선택적)
 kubectl apply -f git-ops/infra/argo-cd/application.yaml
@@ -175,7 +175,7 @@ find git-ops/infra -name "application.yaml" -exec sed -i '' 's|https://github.co
 | **ingress-nginx**        | ✅ ingress-nginx         | resources 없음 (현재)                                            | ingress-nginx      |
 | **sealed-secrets**       | ✅ sealed-secrets        | create-secret-key.yaml                                           | sealed-secrets     |
 | **cert-manager**         | ✅ cert-manager          | create-secret-key-json.yaml, ClusterIssuer, wildcard-certificate | cert-manager       |
-| **kubed**                | ✅ kubed                 | resources 없음                                                   | kubed              |
+| **reflector**            | ✅ reflector             | resources 없음                                                   | kube-system        |
 | **argo-cd**              | ✅ argo-cd               | ingress.yaml                                                     | argo-cd            |
 | **longhorn**             | ✅ longhorn              | ingress.yaml                                                     | longhorn-system    |
 | **metrics-server**       | ✅ metrics-server        | resources 없음                                                   | kube-system        |
@@ -197,13 +197,13 @@ sync-waves를 사용하여 실행 순서를 보장합니다.
 
 ### 인증서 관리 전략 (Certificate Sync)
 
-우리는 **Kubed**를 사용하여 단일 와일드카드 인증서를 모든 네임스페이스로 복제하여 사용합니다.
+우리는 **Reflector**를 사용하여 단일 와일드카드 인증서를 모든 네임스페이스로 복제하여 사용합니다.
 
 1. **cert-manager**: `cert-manager` 네임스페이스에 `wildcard-certificate.yaml` 배포
-2. **kubed**: `kubed.appscode.com/sync: ""` 어노테이션을 감지하여 Secret(`archainia-wildcard-tls`)을 모든 네임스페이스로 자동 복제
+2. **reflector**: `reflection.emberstack.com/reflection-auto-enabled: "true"` 어노테이션을 감지하여 Secret(`archainia-wildcard-tls`)을 모든 네임스페이스로 자동 복제
 3. **사용**: 각 Application의 Ingress는 복제된 Secret을 참조하여 HTTPS 적용
 
-> **참고**: 특정 네임스페이스에만 복제하려면 `sync: "app=archainia"` 처럼 설정하고 해당 네임스페이스에 라벨을 추가해야 합니다. 현재는 관리 편의를 위해 전체 복제 방식을 사용 중입니다.
+> **참고**: 특정 네임스페이스에만 복제하려면 `reflection-allowed: "true"` 및 `reflection-allowed-namespaces: "argo-cd,longhorn-system"` 설정을 사용합니다. 현재는 관리 편의를 위해 전체 복제 방식을 사용 중입니다.
 
 ## 주의사항
 

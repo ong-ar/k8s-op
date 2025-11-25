@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: reflector
+  namespace: argo-cd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra-structure
+  sources:
+    - repoURL: https://emberstack.github.io/helm-charts
+      chart: reflector
+      targetRevision: 9.1.40
+      helm:
+        values: |
+    - repoURL: https://github.com/ong-ar/k8s-op
+      path: git-ops/infra/reflector
+      targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system  # Reflector는 보통 시스템 네임스페이스에 설치합니다
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+

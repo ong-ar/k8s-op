@@ -4,10 +4,12 @@ metadata:
   name: archainia-wildcard-cert
   namespace: cert-manager
   annotations:
-    # kubed 가 이 Secret 을 모든 네임스페이스(혹은 레이블 매칭된)로 복제하도록 설정
-    # "" 값은 모든 네임스페이스로 복제 (권장하지 않지만 간편함)
-    # 특정 네임스페이스만 하려면 "app=archainia" 같은 레이블 셀렉터 사용 가능
-    kubed.appscode.com/sync: ""
+    # Reflector 설정: 생성되는 Secret을 다른 네임스페이스로 자동 복제
+    # reflection-auto-enabled: "true" -> 모든 네임스페이스로 복제
+    # reflection-allowed: "true" -> 허용 목록에 있는 곳만 복제 (여기서는 auto 사용)
+    # reflection-allowed-namespaces: "argo-cd,longhorn-system" (콤마로 구분, auto-enabled와 같이 쓰면 제한 가능)
+    reflection.emberstack.com/reflection-auto-enabled: "true"
+    reflection.emberstack.com/reflection-auto-namespaces: "" # 모든 네임스페이스
 spec:
   secretName: archainia-wildcard-tls
   privateKey:
@@ -18,4 +20,3 @@ spec:
   issuerRef:
     name: letsencrypt-issuer-archainia-app
     kind: ClusterIssuer
-
