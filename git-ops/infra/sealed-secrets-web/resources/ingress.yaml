@@ -6,16 +6,16 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/whitelist-source-range: "61.77.247.3/32"
     # 만약 ingress-nginx 가 기본으로 https 리다이렉트 한다면 이거 추가
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    # nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
 spec:
   ingressClassName: nginx
 
   # ⛔ tls 블록 전체 삭제
-  # tls:
-  #   - hosts:
-  #       - sealed-secrets.archainia.app
-  #     secretName: archainia-wildcard-tls
+  tls:
+    - hosts:
+        - sealed-secrets.archainia.app
+      secretName: archainia-wildcard-tls
 
   rules:
     - host: sealed-secrets.archainia.app
