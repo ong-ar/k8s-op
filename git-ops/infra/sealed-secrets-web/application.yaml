@@ -29,4 +29,6 @@ spec:
     # automated 없음 = 수동 동기화
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
 
