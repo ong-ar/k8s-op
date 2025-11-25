@@ -86,6 +86,7 @@ spec:
     # automated 없음 = 수동 동기화
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -114,4 +115,4 @@ spec:
     # automated 없음 = 수동 동기화
     syncOptions:
       - CreateNamespace=true
-
+      - ServerSideApply=true
