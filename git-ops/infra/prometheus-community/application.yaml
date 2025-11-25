@@ -25,7 +25,7 @@ spec:
                     accessModes: ["ReadWriteOnce"]
                     resources:
                       requests:
-                        storage: 5Gi
+                        storage: 50Gi
               walCompression: true
               enableAdminAPI: false
             service:
@@ -63,7 +63,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: monitoring
   syncPolicy:
-    # automated 없음 = 수동 동기화
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
 
