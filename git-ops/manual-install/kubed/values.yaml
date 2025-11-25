@@ -1,0 +1,8 @@
+kubed:
+  operator:
+    registry: appscode
+    repository: kubed
+    tag: v0.13.2
+enableConfigSyncer: true
+enableAnalytics: false
+

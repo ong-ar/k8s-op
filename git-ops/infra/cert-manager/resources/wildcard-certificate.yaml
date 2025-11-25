@@ -1,0 +1,21 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: archainia-wildcard-cert
+  namespace: cert-manager
+  annotations:
+    # kubed 가 이 Secret 을 모든 네임스페이스(혹은 레이블 매칭된)로 복제하도록 설정
+    # "" 값은 모든 네임스페이스로 복제 (권장하지 않지만 간편함)
+    # 특정 네임스페이스만 하려면 "app=archainia" 같은 레이블 셀렉터 사용 가능
+    kubed.appscode.com/sync: ""
+spec:
+  secretName: archainia-wildcard-tls
+  privateKey:
+    rotationPolicy: Always
+  dnsNames:
+    - archainia.app
+    - "*.archainia.app"
+  issuerRef:
+    name: letsencrypt-issuer-archainia-app
+    kind: ClusterIssuer
+
