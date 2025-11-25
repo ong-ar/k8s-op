@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio-ingress
+  namespace: argo-cd
+  annotations:
+    nginx.ingress.kubernetes.io/whitelist-source-range: "61.77.247.3/32"
+spec:
+  ingressClassName: nginx
+
+  tls:
+    - hosts:
+        - minio.archainia.app
+      secretName: archainia-wildcard-tls
+
+  rules:
+    - host: minio.archainia.app
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: minio-console
+                port:
+                  number: 80
+
