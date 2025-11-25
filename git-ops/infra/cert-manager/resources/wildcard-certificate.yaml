@@ -3,15 +3,13 @@ kind: Certificate
 metadata:
   name: archainia-wildcard-cert
   namespace: cert-manager
-  annotations:
-    # Reflector 설정: 생성되는 Secret을 다른 네임스페이스로 자동 복제
-    # reflection-auto-enabled: "true" -> 모든 네임스페이스로 복제
-    # reflection-allowed: "true" -> 허용 목록에 있는 곳만 복제 (여기서는 auto 사용)
-    # reflection-allowed-namespaces: "argo-cd,longhorn-system" (콤마로 구분, auto-enabled와 같이 쓰면 제한 가능)
-    reflection.emberstack.com/reflection-auto-enabled: "true"
-    reflection.emberstack.com/reflection-auto-namespaces: "" # 모든 네임스페이스
 spec:
   secretName: archainia-wildcard-tls
+  # Secret에 어노테이션을 전달하기 위해 secretTemplate 사용
+  secretTemplate:
+    annotations:
+      reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: ""
   privateKey:
     rotationPolicy: Always
   dnsNames:

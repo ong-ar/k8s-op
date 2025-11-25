@@ -27,10 +27,11 @@ kubectl get pods -n kube-system -l app.kubernetes.io/name=reflector
 metadata:
   annotations:
     # 모든 네임스페이스로 복제
-    reflection.emberstack.com/reflection-auto-enabled: "true"
+    reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+    reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: ""
     
     # 또는 특정 네임스페이스로만 복제
-    # reflection.emberstack.com/reflection-allowed: "true"
-    # reflection.emberstack.com/reflection-allowed-namespaces: "argo-cd,longhorn-system"
+    # reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+    # reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "argo-cd,longhorn-system"
 ```
 
