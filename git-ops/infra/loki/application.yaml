@@ -38,6 +38,18 @@ spec:
                 # accessKeyId, secretAccessKey 제거 (Secret에서 참조)
                 s3ForcePathStyle: true
                 insecure: true
+            
+          minio:
+            enabled: false
+          deploymentMode: SingleBinary
+          singleBinary:
+            replicas: 1
+            persistence:
+              enabled: true
+              storageClass: longhorn
+              accessModes: 
+                - ReadWriteOnce
+              size: 5Gi
             # Secret에서 자격증명 참조
             extraEnv:
               - name: AWS_ACCESS_KEY_ID
@@ -50,17 +62,6 @@ spec:
                   secretKeyRef:
                     name: loki-minio-credentials
                     key: secretAccessKey
-          minio:
-            enabled: false
-          deploymentMode: SingleBinary
-          singleBinary:
-            replicas: 1
-            persistence:
-              enabled: true
-              storageClass: longhorn
-              accessModes: 
-                - ReadWriteOnce
-              size: 5Gi
           backend:
             replicas: 0
           read:
