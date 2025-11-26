@@ -6,7 +6,3 @@ resources:
 - resources/service.yaml
 - resources/ingress.yaml
 - resources/sealed-secret.yaml
-
-images:
-- name: ghcr.io/ong-ar/k8s-op-service-b
-  newTag: sha-fc8a22a532661fc5e653f2ec63566b92558c50b1

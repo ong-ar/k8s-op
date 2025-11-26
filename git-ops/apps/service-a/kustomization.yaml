@@ -6,7 +6,3 @@ resources:
   - resources/service.yaml
   - resources/ingress.yaml
   - resources/sealed-secret.yaml
-
-images:
-  - name: ghcr.io/ong-ar/k8s-op-service-a
-    newTag: latest # CI가 이 부분을 업데이트하게 됩니다.
