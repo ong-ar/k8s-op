@@ -1,15 +1,17 @@
 name: Build and Push
 
 on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - 'apps/**'
-      - 'packages/**'
-      - 'package.json'
-      - 'pnpm-lock.yaml'
-      - 'pnpm-workspace.yaml'
-      - '.github/workflows/**'
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'Target service to build (all, service-a, service-b)'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+        - all
+        - service-a
+        - service-b
 
 env:
   REGISTRY: ghcr.io
@@ -26,6 +28,9 @@ jobs:
     strategy:
       matrix:
         service: [service-a, service-b]
+        exclude:
+          - service: ${{ inputs.service != 'all' && inputs.service != 'service-a' && 'service-a' || '' }}
+          - service: ${{ inputs.service != 'all' && inputs.service != 'service-b' && 'service-b' || '' }}
 
     steps:
       - name: Checkout repository

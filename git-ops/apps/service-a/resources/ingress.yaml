@@ -1,13 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: service-a
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+  name: service-a-ingress
+  namespace: argo-cd
 spec:
   ingressClassName: nginx
+
+  tls:
+    - hosts:
+        - service-a.archainia.app
+      secretName: archainia-wildcard-tls
+
   rules:
-    - host: service-a.local
+    - host: service-a.archainia.app
       http:
         paths:
           - path: /
