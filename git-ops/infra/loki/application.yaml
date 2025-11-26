@@ -38,7 +38,7 @@ spec:
                 ruler: loki-ruler
                 admin: loki-admin
               s3:
-                endpoint: http://tenant-loki-hl.tenant-loki.svc.cluster.local:9000
+                endpoint: http://minio-tenant-shared-hl.minio-tenant.svc.cluster.local:9000
                 region: us-east-1
                 # accessKeyId, secretAccessKey 제거 (Secret에서 참조)
                 s3ForcePathStyle: true

@@ -15,10 +15,10 @@ spec:
       helm:
         values: |
           tenant:
-            name: tenant-loki
-            namespace: tenant-loki
+            name: minio-tenant-shared
+            namespace: minio-tenant
             configSecret:
-              name: tenant-loki-creds-secret
+              name: minio-tenant-shared-secret
               existingSecret: true
             pools:
               - name: pool-0
@@ -37,7 +37,7 @@ spec:
       kustomize: {}  # kustomization.yaml 사용 (resources만 관리)
   destination:
     server: https://kubernetes.default.svc
-    namespace: tenant-loki
+    namespace: minio-tenant
   syncPolicy:
     automated:
       prune: true

@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: minio-ingress
-  namespace: tenant-loki
+  namespace: minio-tenant
   annotations:
     nginx.ingress.kubernetes.io/whitelist-source-range: "61.77.247.3/32"
 spec:
@@ -21,7 +21,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: tenant-loki-console
+                name: minio-tenant-shared-console
                 port:
                   number: 9090
 
