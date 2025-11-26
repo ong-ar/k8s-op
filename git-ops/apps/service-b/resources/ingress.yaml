@@ -1,13 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: service-b
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+  name: service-b-ingress
+  namespace: production
 spec:
   ingressClassName: nginx
+
+  tls:
+    - hosts:
+        - service-b.archainia.app
+      secretName: archainia-wildcard-tls
+
   rules:
-    - host: service-b.local
+    - host: service-b.archainia.app
       http:
         paths:
           - path: /
