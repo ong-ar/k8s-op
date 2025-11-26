@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: calico
+  name: promtail
   namespace: argo-cd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -9,27 +9,27 @@ spec:
   project: infra-structure
   # Use Argo CD 2.6+ Multiple Sources (Helm repository + Git resources)
   sources:
-    - repoURL: https://projectcalico.docs.tigera.io/charts
-      chart: tigera-operator
-      targetRevision: 3.31.0
+    - repoURL: https://grafana.github.io/helm-charts
+      chart: promtail
+      targetRevision: 6.17.0
       helm:
         values: |
-          installation:
-            enabled: true
-            calicoNetwork:
-              ipPools:
-                - cidr: 192.168.0.0/16
+          config:
+            clients:
+              - url: http://loki.loki.svc.cluster.local:3100/loki/api/v1/push
+                tenant_id: 1
     - repoURL: https://github.com/ong-ar/k8s-op
-      path: git-ops/infra/calico
+      path: git-ops/infra/loki/promtail
       targetRevision: main
       kustomize: {}  # Use kustomization.yaml (manage resources only)
   destination:
     server: https://kubernetes.default.svc
-    namespace: tigera-operator
+    namespace: loki
   syncPolicy:
-    # No automated sync = Manual sync
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
       - ApplyOutOfSyncOnly=true
-

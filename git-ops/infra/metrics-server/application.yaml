@@ -21,7 +21,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: kube-system
   syncPolicy:
-    # No automated sync = Manual sync
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true

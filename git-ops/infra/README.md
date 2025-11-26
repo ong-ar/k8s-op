@@ -17,7 +17,7 @@ All subsequent infrastructure will be deployed via Argo CD **sequentially**.
 
 ## 1. Essential Network & Tool Installation (Manual Install)
 
-Use the scripts and configuration files located in the `git-ops/infra/manual-install/` directory for the initial bootstrap.
+Use the scripts and configuration files located in the `git-ops/infra/.manual-install/` directory for the initial bootstrap.
 
 ### 1-1. Install Calico (CNI)
 
@@ -25,7 +25,7 @@ You must install the network plugin for Pod communication first.
 
 ```bash
 # Move to directory
-cd git-ops/infra/manual-install/calico
+cd git-ops/infra/.manual-install/calico
 
 # Add Helm Repository
 helm repo add projectcalico https://projectcalico.docs.tigera.io/charts
@@ -132,8 +132,8 @@ kubectl apply -f git-ops/infra/minio/operator/application.yaml
 kubectl apply -f git-ops/infra/minio/tenant/application.yaml
 
 # 9. Loki & Promtail (Logging)
-kubectl apply -f git-ops/infra/loki/application.yaml
-# Promtail is included in loki/application.yaml or separate depending on configuration
+kubectl apply -f git-ops/infra/loki/loki/application.yaml
+kubectl apply -f git-ops/infra/loki/promtail/application.yaml
 
 # 10. Sealed Secrets Web (UI)
 kubectl apply -f git-ops/infra/sealed-secrets-web/application.yaml
@@ -173,7 +173,7 @@ kubectl apply -f git-ops/infra/sealed-secrets-web/application.yaml
 │       ├── loki/
 │       ├── minio/
 │       ├── ...
-│       └── manual-install/ # Manual installation files for initial cluster setup
+│       └── .manual-install/# Manual installation files for initial cluster setup
 │           ├── argo-cd/    # Helm Values for initial Argo CD installation
 │           └── calico/     # Helm Values for CNI installation
 ```
