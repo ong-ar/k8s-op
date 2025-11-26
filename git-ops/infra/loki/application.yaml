@@ -7,7 +7,7 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: infra-structure
-  # Argo CD 2.6+ Multiple Sources 사용 (Helm repository + Git resources)
+  # Use Argo CD 2.6+ Multiple Sources (Helm repository + Git resources)
   ignoreDifferences:
     - group: apps
       kind: StatefulSet
@@ -40,7 +40,7 @@ spec:
               s3:
                 endpoint: http://minio-tenant-shared-hl.minio-tenant.svc.cluster.local:9000
                 region: us-east-1
-                # accessKeyId, secretAccessKey 제거 (Secret에서 참조)
+                # Removed accessKeyId, secretAccessKey (Reference from Secret)
                 s3ForcePathStyle: true
                 insecure: true
             
@@ -55,7 +55,7 @@ spec:
               accessModes: 
                 - ReadWriteOnce
               size: 5Gi
-            # Secret에서 자격증명 참조
+            # Reference credentials from Secret
             extraEnv:
               - name: AWS_ACCESS_KEY_ID
                 valueFrom:
@@ -99,7 +99,7 @@ spec:
     - repoURL: https://github.com/ong-ar/k8s-op
       path: git-ops/infra/loki
       targetRevision: main
-      kustomize: {}  # kustomization.yaml 사용 (resources만 관리)
+      kustomize: {}  # Use kustomization.yaml (manage resources only)
   destination:
     server: https://kubernetes.default.svc
     namespace: loki
@@ -121,7 +121,7 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: infra-structure
-  # Promtail Helm chart 설치
+  # Install Promtail Helm chart
   source:
     repoURL: https://grafana.github.io/helm-charts
     chart: promtail

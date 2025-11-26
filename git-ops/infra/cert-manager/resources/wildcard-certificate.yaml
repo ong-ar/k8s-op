@@ -5,7 +5,7 @@ metadata:
   namespace: cert-manager
 spec:
   secretName: archainia-wildcard-tls
-  # Secret에 어노테이션을 전달하기 위해 secretTemplate 사용
+  # Use secretTemplate to pass annotations to Secret
   secretTemplate:
     annotations:
       reflector.v1.k8s.emberstack.com/reflection-allowed: "true"  

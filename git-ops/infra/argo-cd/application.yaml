@@ -7,16 +7,16 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: infra-structure
-  # Argo CD Helm chart는 수동 설치 (helm install)
-  # Argo CD는 resources만 관리 (ingress 등)
+  # Argo CD Helm chart is manually installed (helm install)
+  # This manages Argo CD resources only (ingress, etc.)
   source:
     repoURL: https://github.com/ong-ar/k8s-op
     path: git-ops/infra/argo-cd
     targetRevision: main
-    kustomize: {}  # kustomization.yaml 사용 (resources만 관리)
+    kustomize: {}  # Use kustomization.yaml (manage resources only)
   destination:
     server: https://kubernetes.default.svc
-    namespace: default  # resources의 namespace에 따라 배포됨
+    namespace: default  # Deployed based on namespace defined in resources
   syncPolicy:
     automated:
       prune: true

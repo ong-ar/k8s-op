@@ -1,7 +1,5 @@
-# list
+# k8s-op
 
-1. calico
-2. metrics-server
-3. metallb
-4. longhorn
-5. prometheus-community
+This repository contains GitOps configurations for the Kubernetes cluster.
+
+Please refer to [git-ops/infra/README.md](git-ops/infra/README.md) for detailed documentation and installation guides.

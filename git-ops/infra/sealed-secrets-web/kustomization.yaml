@@ -2,4 +2,4 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - resources/ingress.yaml
-  # application.yaml은 제외
+  # Exclude application.yaml

@@ -7,7 +7,7 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: infra-structure
-  # Argo CD 2.6+ Multiple Sources 사용 (Helm repository + Git resources)
+  # Use Argo CD 2.6+ Multiple Sources (Helm repository + Git resources)
   sources:
     - repoURL: https://projectcalico.docs.tigera.io/charts
       chart: tigera-operator
@@ -22,12 +22,12 @@ spec:
     - repoURL: https://github.com/ong-ar/k8s-op
       path: git-ops/infra/calico
       targetRevision: main
-      kustomize: {}  # kustomization.yaml 사용 (resources만 관리)
+      kustomize: {}  # Use kustomization.yaml (manage resources only)
   destination:
     server: https://kubernetes.default.svc
     namespace: tigera-operator
   syncPolicy:
-    # automated 없음 = 수동 동기화
+    # No automated sync = Manual sync
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true

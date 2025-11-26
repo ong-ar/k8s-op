@@ -7,7 +7,7 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: infra-structure
-  # Argo CD 2.6+ Multiple Sources 사용 (Helm repository + Git resources)
+  # Use Argo CD 2.6+ Multiple Sources (Helm repository + Git resources)
   sources:
     - repoURL: https://kubernetes.github.io/ingress-nginx
       chart: ingress-nginx
@@ -29,7 +29,7 @@ spec:
     - repoURL: https://github.com/ong-ar/k8s-op
       path: git-ops/infra/ingress-nginx
       targetRevision: main
-      kustomize: {}  # kustomization.yaml 사용 (resources만 관리)
+      kustomize: {}  # Use kustomization.yaml (manage resources only)
   destination:
     server: https://kubernetes.default.svc
     namespace: ingress-nginx

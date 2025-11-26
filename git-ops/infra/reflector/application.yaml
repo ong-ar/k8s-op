@@ -18,7 +18,7 @@ spec:
       targetRevision: main
   destination:
     server: https://kubernetes.default.svc
-    namespace: kube-system  # Reflector는 보통 시스템 네임스페이스에 설치합니다
+    namespace: kube-system  # Reflector is usually installed in system namespace
   syncPolicy:
     automated:
       prune: true

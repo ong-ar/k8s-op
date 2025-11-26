@@ -1,5 +1,0 @@
-configuration:
-  watcher:
-    # 기본적으로 모든 네임스페이스 감시 ("" 는 전체)
-    namespaces: ""
-

@@ -7,7 +7,7 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: infra-structure
-  # Argo CD 2.6+ Multiple Sources 사용 (Helm repository)
+  # Use Argo CD 2.6+ Multiple Sources (Helm repository)
   source:
     repoURL: https://kubernetes-sigs.github.io/metrics-server/
     chart: metrics-server
@@ -21,7 +21,7 @@ spec:
     server: https://kubernetes.default.svc
     namespace: kube-system
   syncPolicy:
-    # automated 없음 = 수동 동기화
+    # No automated sync = Manual sync
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
