@@ -5,7 +5,7 @@ This repository contains configuration files for managing the Kubernetes cluster
 ## 🚀 Getting Started
 
 When setting up the cluster for the first time, you must manually install the essential components (`Calico`, `Argo CD`) in the following order.
-All subsequent infrastructure (`Cert Manager`, `Ingress Nginx`, `Loki`, `MinIO`, etc.) will be automatically deployed via Argo CD.
+All subsequent infrastructure will be deployed via Argo CD **sequentially**.
 
 ### Prerequisites
 
@@ -71,76 +71,93 @@ kubectl get pods -n argo-cd
 
 ---
 
-## 2. GitOps Bootstrap
+## 2. GitOps Bootstrap (Sequential Apply)
 
-Once Argo CD is installed, connect this repository to automatically build the rest of the infrastructure.
+Once Argo CD is installed, apply the applications in the following order to ensure dependencies are met.
 
-### 2-1. Deploy Root Application (App of Apps)
+### 2-1. Apply AppProject
 
-First, apply the AppProject:
+First, apply the `infra-structure` project:
 
 ```bash
 kubectl apply -f git-ops/infra/app-project.yaml
 ```
 
-Then, deploy the **Root Application** which manages all other infrastructure components. You can apply the following manifest:
+### 2-2. Apply Base Infrastructure
+
+These components are required for other applications to function (Secret management, Certificates, Ingress).
+
+> **⚠️ Important:** Before applying Sealed Secrets, you must restore your **Private Key** if you are migrating or reinstalling.
+> If you don't restore the key, existing encrypted secrets will not be decryptable.
+>
+> ```bash
+> # Example: Restore Master Key
+> kubectl apply -f master-key.yaml
+> ```
 
 ```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: infra-root
-  namespace: argo-cd
-spec:
-  project: infra-structure
-  source:
-    repoURL: https://github.com/ong-ar/k8s-op.git
-    targetRevision: main
-    path: git-ops/infra
-    directory:
-      recurse: true
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: argo-cd
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-EOF
+# 1. Sealed Secrets (Encryption)
+kubectl apply -f git-ops/infra/sealed-secrets/application.yaml
+
+# 2. Cert Manager (TLS Certificates)
+kubectl apply -f git-ops/infra/cert-manager/application.yaml
+
+# 3. Reflector (Secret Replication)
+kubectl apply -f git-ops/infra/reflector/application.yaml
+
+# 4. Ingress NGINX (Ingress Controller)
+kubectl apply -f git-ops/infra/ingress-nginx/application.yaml
 ```
 
-### 2-2. Automatically Deployed Components & Verification
+> **Wait:** Ensure `cert-manager` and `ingress-nginx` are fully running before proceeding.
 
-Once Argo CD synchronizes (Sync), the following components will be automatically installed.
+### 2-3. Apply Storage & Monitoring
 
-#### 📊 Prometheus & Grafana (Monitoring)
+```bash
+# 5. Longhorn (Distributed Storage)
+kubectl apply -f git-ops/infra/longhorn/application.yaml
+
+# 6. Prometheus & Grafana (Monitoring)
+kubectl apply -f git-ops/infra/prometheus-community/application.yaml
+
+# 7. Metrics Server
+kubectl apply -f git-ops/infra/metrics-server/application.yaml
+```
+
+### 2-4. Apply Applications
+
+```bash
+# 8. MinIO Operator & Tenant (Object Storage)
+kubectl apply -f git-ops/infra/minio/operator/application.yaml
+kubectl apply -f git-ops/infra/minio/tenant/application.yaml
+
+# 9. Loki & Promtail (Logging)
+kubectl apply -f git-ops/infra/loki/application.yaml
+# Promtail is included in loki/application.yaml or separate depending on configuration
+
+# 10. Sealed Secrets Web (UI)
+kubectl apply -f git-ops/infra/sealed-secrets-web/application.yaml
+```
+
+---
+
+## 3. Verification & Access
+
+### 📊 Prometheus & Grafana
 
 - **Namespace**: `monitoring`
 - **Check Grafana Admin Password**:
   ```bash
-  kubectl get secret -n monitoring kube-prometheus-stack-grafana -o jsonpath="{.data.admin-password}" | base64 -d; echo
+  kubectl get secret -n monitoring prometheus-community-grafana -o jsonpath="{.data.admin-password}" | base64 -d; echo
   ```
 
-#### 🔐 Argo CD (GitOps)
+### 🔐 Argo CD
 
 - **Namespace**: `argo-cd`
 - **Check Initial Admin Password**:
   ```bash
   kubectl -n argo-cd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
   ```
-
-#### Other Components
-
-- **Cert Manager**: Certificate management
-- **Ingress NGINX**: Ingress controller
-- **Longhorn**: Distributed storage
-- **Loki & Promtail**: Logging system
-- **MinIO**: Object storage
-- **Sealed Secrets**: Secret encryption management
-- **Reflector**: Secret/ConfigMap replication
 
 ---
 
