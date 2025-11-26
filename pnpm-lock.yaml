@@ -3,6 +3,7 @@ lockfileVersion: '9.0'
 settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
+  injectWorkspacePackages: true
 
 importers:
 
@@ -10,6 +11,9 @@ importers:
 
   apps/service-a:
     dependencies:
+      '@k8s-op/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@nestjs/common':
         specifier: ^11.0.1
         version: 11.1.9(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -28,6 +32,9 @@ importers:
       rxjs:
         specifier: ^7.8.1
         version: 7.8.2
+    dependenciesMeta:
+      '@k8s-op/shared':
+        injected: true
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.2.0
@@ -101,6 +108,9 @@ importers:
 
   apps/service-b:
     dependencies:
+      '@k8s-op/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@nestjs/common':
         specifier: ^11.0.1
         version: 11.1.9(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -119,6 +129,9 @@ importers:
       rxjs:
         specifier: ^7.8.1
         version: 7.8.2
+    dependenciesMeta:
+      '@k8s-op/shared':
+        injected: true
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.2.0
@@ -189,6 +202,8 @@ importers:
       typescript-eslint:
         specifier: ^8.20.0
         version: 8.48.0(eslint@9.39.1)(typescript@5.9.3)
+
+  packages/shared: {}
 
 packages:
 

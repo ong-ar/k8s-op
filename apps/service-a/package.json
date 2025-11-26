@@ -25,7 +25,13 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "@k8s-op/shared": "workspace:*"
+  },
+  "dependenciesMeta": {
+    "@k8s-op/shared": {
+      "injected": true
+    }
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
