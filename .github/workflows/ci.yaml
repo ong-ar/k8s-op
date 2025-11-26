@@ -1,0 +1,75 @@
+name: Build and Push
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/**'
+
+env:
+  REGISTRY: ghcr.io
+  # 리포지토리 이름은 소유자/이름 형식이므로, 여기서는 ong-ar/k8s-op가 됩니다.
+  # 따라서 이미지는 ghcr.io/ong-ar/k8s-op-service-a 처럼 됩니다.
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Git 커밋을 위해 쓰기 권한 필요
+      packages: write
+    strategy:
+      matrix:
+        service: [service-a, service-b]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.service }}
+          tags: |
+            type=sha,format=long
+            latest
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/${{ matrix.service }}/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Update Kubernetes manifest
+        run: |
+          # Git 설정
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+
+          # 이미지 태그 추출 (sha-xxxxxxxx 형식)
+          NEW_TAG="sha-$(git rev-parse HEAD)"
+          
+          # Kustomization 파일 업데이트 (kustomize CLI 사용)
+          cd git-ops/apps/${{ matrix.service }}
+          kustomize edit set image ghcr.io/${{ env.IMAGE_NAME }}-${{ matrix.service }}:${NEW_TAG}
+          
+          # 변경 사항 커밋 및 푸시
+          git add kustomization.yaml
+          git commit -m "Update ${{ matrix.service }} image tag to ${NEW_TAG}" || echo "No changes to commit"
+          git push

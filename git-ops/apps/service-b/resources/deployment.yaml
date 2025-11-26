@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-b
+  labels:
+    app: service-b
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-b
+  template:
+    metadata:
+      labels:
+        app: service-b
+    spec:
+      containers:
+        - name: service-b
+          image: ghcr.io/ong-ar/k8s-op-service-b:latest
+          ports:
+            - containerPort: 3001
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              if [ -f /etc/secrets/.env ]; then
+                cp /etc/secrets/.env .env
+                echo ".env file copied from secrets"
+              else
+                echo "No .env secret found, using defaults"
+              fi
+              node dist/main
+          volumeMounts:
+            - name: secret-volume
+              mountPath: /etc/secrets
+              readOnly: true
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: service-b-env-secret
+            optional: true
+
