@@ -1,36 +1,44 @@
 name: Build and Push
 
 on:
-  workflow_dispatch:
-    inputs:
-      service:
-        description: 'Target service to build (all, service-a, service-b)'
-        required: true
-        default: 'all'
-        type: choice
-        options:
-        - all
-        - service-a
-        - service-b
+  # 1. 태그 푸시 시 트리거 (엄격한 버전 형식: 앱이름/v0.0.0)
+  push:
+    tags:
+      - 'service-a/v[0-9]+.[0-9]+.[0-9]+'
+      - 'service-b/v[0-9]+.[0-9]+.[0-9]+'
+      # 추후 서비스 추가 시 여기에 패턴 추가
+      # - 'contract/v[0-9]+.[0-9]+.[0-9]+'
+      # - 'bridge/v[0-9]+.[0-9]+.[0-9]+'
 
 env:
   REGISTRY: ghcr.io
-  # 리포지토리 이름은 소유자/이름 형식이므로, 여기서는 ong-ar/k8s-op가 됩니다.
-  # 따라서 이미지는 ghcr.io/ong-ar/k8s-op-service-a 처럼 됩니다.
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          TAG_NAME="${{ github.ref_name }}"
+          # 태그 형식이 service-name/version 이라고 가정하고 파싱
+          SERVICE_NAME=$(echo $TAG_NAME | cut -d'/' -f1)
+          VERSION=$(echo $TAG_NAME | cut -d'/' -f2)
+          
+          # JSON 배열 형태로 matrix 생성 (service 하나만 포함)
+          echo "matrix={\"service\":[\"$SERVICE_NAME\"],\"version\":[\"$VERSION\"]}" >> $GITHUB_OUTPUT
+
   build-and-push:
+    needs: prepare
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Git 커밋을 위해 쓰기 권한 필요
+      contents: write
       packages: write
     strategy:
-      matrix:
-        service: [service-a, service-b]
-        exclude:
-          - service: ${{ inputs.service != 'all' && inputs.service != 'service-a' && 'service-a' || '' }}
-          - service: ${{ inputs.service != 'all' && inputs.service != 'service-b' && 'service-b' || '' }}
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+      fail-fast: false
 
     steps:
       - name: Checkout repository
@@ -49,8 +57,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.service }}
           tags: |
-            type=sha,format=long
-            latest
+            type=raw,value=${{ matrix.version }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -60,3 +67,23 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Update Kubernetes manifest
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+
+          NEW_TAG="${{ matrix.version }}"
+          
+          cd git-ops/apps/${{ matrix.service }}
+          
+          # kustomization.yaml 업데이트
+          kustomize edit set image ghcr.io/${{ env.IMAGE_NAME }}-${{ matrix.service }}:${NEW_TAG}
+          
+          # 커밋 및 푸시
+          git add kustomization.yaml
+          git commit -m "Update ${{ matrix.service }} image tag to ${NEW_TAG}"
+          
+          # Rebase 후 푸시 (충돌 방지)
+          git pull --rebase origin main
+          git push origin main
