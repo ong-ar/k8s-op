@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: service-a
+  annotations:
+    secret.reloader.stakater.com/reload: "service-a-env-secret"
   labels:
     app: service-a
 spec:
