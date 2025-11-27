@@ -86,4 +86,4 @@ jobs:
           
           # Rebase 후 푸시 (충돌 방지)
           git pull --rebase origin main
-          git push origin main
+          git push origin HEAD:main
