@@ -6,3 +6,6 @@ resources:
 - resources/service.yaml
 - resources/ingress.yaml
 - resources/sealed-secret.yaml
+images:
+- name: ghcr.io/ong-ar/k8s-op-service-b
+  newTag: v0.0.2
