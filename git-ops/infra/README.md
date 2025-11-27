@@ -107,6 +107,9 @@ kubectl apply -f git-ops/infra/reflector/application.yaml
 
 # 4. Ingress NGINX (Ingress Controller)
 kubectl apply -f git-ops/infra/ingress-nginx/application.yaml
+
+# 5. Reloader (Auto Pod Restart on Config/Secret Change)
+kubectl apply -f git-ops/infra/reloader/application.yaml
 ```
 
 > **Wait:** Ensure `cert-manager` and `ingress-nginx` are fully running before proceeding.
@@ -114,28 +117,28 @@ kubectl apply -f git-ops/infra/ingress-nginx/application.yaml
 ### 2-3. Apply Storage & Monitoring
 
 ```bash
-# 5. Longhorn (Distributed Storage)
+# 6. Longhorn (Distributed Storage)
 kubectl apply -f git-ops/infra/longhorn/application.yaml
 
-# 6. Prometheus & Grafana (Monitoring)
+# 7. Prometheus & Grafana (Monitoring)
 kubectl apply -f git-ops/infra/prometheus-community/application.yaml
 
-# 7. Metrics Server
+# 8. Metrics Server
 kubectl apply -f git-ops/infra/metrics-server/application.yaml
 ```
 
 ### 2-4. Apply Applications
 
 ```bash
-# 8. MinIO Operator & Tenant (Object Storage)
+# 9. MinIO Operator & Tenant (Object Storage)
 kubectl apply -f git-ops/infra/minio/operator/application.yaml
 kubectl apply -f git-ops/infra/minio/tenant/application.yaml
 
-# 9. Loki & Promtail (Logging)
+# 10. Loki & Promtail (Logging)
 kubectl apply -f git-ops/infra/loki/loki/application.yaml
 kubectl apply -f git-ops/infra/loki/promtail/application.yaml
 
-# 10. Sealed Secrets Web (UI)
+# 11. Sealed Secrets Web (UI)
 kubectl apply -f git-ops/infra/sealed-secrets-web/application.yaml
 ```
 
@@ -172,6 +175,7 @@ kubectl apply -f git-ops/infra/sealed-secrets-web/application.yaml
 │       ├── ingress-nginx/
 │       ├── loki/
 │       ├── minio/
+│       ├── reloader/       # Reloader configuration
 │       ├── ...
 │       └── .manual-install/# Manual installation files for initial cluster setup
 │           ├── argo-cd/    # Helm Values for initial Argo CD installation
