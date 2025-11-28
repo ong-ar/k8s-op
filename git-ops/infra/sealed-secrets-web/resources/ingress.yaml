@@ -4,7 +4,7 @@ metadata:
   name: sealed-secrets-web-ingress
   namespace: sealed-secrets-web
   annotations:
-    nginx.ingress.kubernetes.io/whitelist-source-range: "61.77.247.3/32"
+    nginx.ingress.kubernetes.io/whitelist-source-range: "61.77.247.3/32,124.61.25.41/32"
     # Add this if ingress-nginx defaults to https redirect
     # nginx.ingress.kubernetes.io/ssl-redirect: "false"
     # nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
