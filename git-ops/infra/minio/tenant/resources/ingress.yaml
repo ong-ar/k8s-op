@@ -4,7 +4,7 @@ metadata:
   name: minio-ingress
   namespace: minio-tenant
   annotations:
-    nginx.ingress.kubernetes.io/whitelist-source-range: "61.77.247.3/32,124.61.25.41/32"
+    nginx.ingress.kubernetes.io/whitelist-source-range: "61.77.247.3/32,125.246.87.242/32"
 spec:
   ingressClassName: nginx
 
