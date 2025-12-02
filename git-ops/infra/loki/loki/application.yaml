@@ -44,7 +44,7 @@ spec:
                 s3ForcePathStyle: true
                 insecure: true
             limits_config:
-              retention_period: 1h
+              retention_period: 2h
 
             compactor:
               retention_enabled: true
