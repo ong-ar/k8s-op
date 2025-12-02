@@ -16,7 +16,7 @@ spec:
         values: |
           prometheus:
             prometheusSpec:
-              retention: 15d
+              retention: 2d
               scrapeInterval: 30s
               storageSpec:
                 volumeClaimTemplate:
