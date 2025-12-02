@@ -43,6 +43,12 @@ spec:
                 # Removed accessKeyId, secretAccessKey (Reference from Secret)
                 s3ForcePathStyle: true
                 insecure: true
+            limits_config:
+              retention_period: 1h
+
+            compactor:
+              retention_enabled: true
+              delete_request_store: s3
             
           minio:
             enabled: false
